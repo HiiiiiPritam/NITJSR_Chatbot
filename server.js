@@ -1,19 +1,24 @@
-const dotenv = require("dotenv")
-const express = require('express');
-const cors = require('cors');
-const fs = require('fs').promises;
-const path = require('path');
+import dotenv from 'dotenv';
+import express from 'express';
+import cors from 'cors';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 dotenv.config();
 
-const { EnhancedNITJSRScraper } = require('./enhancedScraper');
-const { EnhancedNITJSRRAGSystem } = require('./enhancedRagSystem');
+import { NITJSRScraper } from './scraper.js';
+import { NITJSRRAGSystem } from './RagSystem.js';
 
-class EnhancedNITJSRServer {
+class NITJSRServer {
     constructor() {
         this.app = express();
-        this.ragSystem = new EnhancedNITJSRRAGSystem();
-        this.scraper = new EnhancedNITJSRScraper({ 
+        this.ragSystem = new NITJSRRAGSystem();
+        this.scraper = new NITJSRScraper({ 
             maxPages: 250, 
             maxDepth: 4, 
             delay: 1000 
@@ -68,7 +73,6 @@ class EnhancedNITJSRServer {
                     vectorDatabase: indexStats,
                     environment: process.env.NODE_ENV || 'development',
                     aiProvider: 'Google Gemini',
-                    version: 'Enhanced v2.0',
                     pineconeIndex: process.env.PINECONE_INDEX_NAME?.trim() || 'Not configured'
                 });
             } catch (error) {
@@ -82,19 +86,18 @@ class EnhancedNITJSRServer {
         // Initialize system endpoint
         this.app.post('/initialize', async (req, res) => {
             try {
-                console.log('🔄 Starting Enhanced Gemini RAG system initialization...');
-                
+                console.log('🔄 Starting Gemini RAG system initialization...');
+
                 // Validate environment variables
                 this.validateEnvironment();
-                
+
                 await this.initializeSystem();
-                
+
                 res.json({
                     success: true,
-                    message: 'Enhanced Gemini RAG system initialized successfully',
+                    message: 'Gemini RAG system initialized successfully',
                     timestamp: new Date().toISOString(),
                     aiProvider: 'Google Gemini',
-                    version: 'Enhanced v2.0',
                     pineconeIndex: process.env.PINECONE_INDEX_NAME?.trim()
                 });
             } catch (error) {
@@ -106,7 +109,7 @@ class EnhancedNITJSRServer {
             }
         });
 
-        // Enhanced chat endpoint - main RAG functionality
+        // Chat endpoint - main RAG functionality
         this.app.post('/chat', async (req, res) => {
             try {
                 const { question } = req.body;
@@ -125,7 +128,7 @@ class EnhancedNITJSRServer {
                     });
                 }
 
-                console.log(`💬 Processing question with Enhanced Gemini: "${question}"`);
+                console.log(`💬 Processing question with Gemini: "${question}"`);
                 const response = await this.ragSystem.chat(question);
 
                 res.json({
@@ -133,7 +136,6 @@ class EnhancedNITJSRServer {
                     question: question,
                     timestamp: new Date().toISOString(),
                     aiProvider: 'Google Gemini',
-                    version: 'Enhanced v2.0',
                     ...response
                 });
 
@@ -146,37 +148,36 @@ class EnhancedNITJSRServer {
             }
         });
 
-        // Enhanced scrape fresh data endpoint
+        // Scrape fresh data endpoint
         this.app.post('/scrape', async (req, res) => {
             try {
                 const { force = false } = req.body;
-                
-                console.log('🚀 Starting enhanced comprehensive data scrape...');
+
+                console.log('🚀 Starting comprehensive data scrape...');
                 const scrapeResult = await this.scraper.scrapeComprehensive();
 
                 // Load and process the scraped data
                 const scrapedData = JSON.parse(await fs.readFile(scrapeResult.filepath, 'utf8'));
-                
+
                 // Clear existing data if force flag is set
                 if (force) {
                     console.log('🗑️ Clearing existing vector data...');
                     await this.ragSystem.clearIndex();
                 }
 
-                // Process and store new enhanced data
+                // Process and store new data
                 await this.ragSystem.processAndStoreDocuments(scrapedData);
 
                 res.json({
                     success: true,
-                    message: 'Enhanced comprehensive data scraped and processed successfully',
+                    message: 'Comprehensive data scraped and processed successfully',
                     summary: scrapeResult.summary,
                     timestamp: new Date().toISOString(),
-                    aiProvider: 'Google Gemini',
-                    version: 'Enhanced v2.0'
+                    aiProvider: 'Google Gemini'
                 });
 
             } catch (error) {
-                console.error('❌ Enhanced scrape error:', error);
+                console.error('❌ Scrape error:', error);
                 res.status(500).json({
                     success: false,
                     error: error.message
@@ -184,7 +185,7 @@ class EnhancedNITJSRServer {
             }
         });
 
-        // Get enhanced system statistics
+        // Get system statistics
         this.app.get('/stats', async (req, res) => {
             try {
                 const indexStats = await this.ragSystem.getIndexStats();
@@ -210,7 +211,6 @@ class EnhancedNITJSRServer {
                     statistics: {
                         initialized: this.isInitialized,
                         aiProvider: 'Google Gemini',
-                        version: 'Enhanced v2.0',
                         pineconeIndex: process.env.PINECONE_INDEX_NAME?.trim(),
                         pineconeEnvironment: process.env.PINECONE_ENVIRONMENT?.trim(),
                         vectorDatabase: indexStats,
@@ -230,7 +230,7 @@ class EnhancedNITJSRServer {
             }
         });
 
-        // Get enhanced data sources with link information
+        // Get data sources with link information
         this.app.get('/sources', async (req, res) => {
             try {
                 const dataDir = path.join(__dirname, 'scraped_data');
@@ -314,16 +314,16 @@ class EnhancedNITJSRServer {
         // Test Gemini connection
         this.app.get('/test-gemini', async (req, res) => {
             try {
-                const { GoogleGenerativeAI } = require('@google/generative-ai');
+                const { GoogleGenerativeAI } = await import('@google/generative-ai');
                 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
                 const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-                const result = await model.generateContent('Say hello and confirm you are working correctly with enhanced capabilities.');
+                const result = await model.generateContent('Say hello and confirm you are working correctly.');
                 const response = result.response.text();
 
                 res.json({
                     success: true,
-                    message: 'Enhanced Gemini connection successful',
+                    message: 'Gemini connection successful',
                     response: response,
                     timestamp: new Date().toISOString()
                 });
@@ -331,7 +331,7 @@ class EnhancedNITJSRServer {
             } catch (error) {
                 res.status(500).json({
                     success: false,
-                    error: 'Enhanced Gemini connection failed: ' + error.message
+                    error: 'Gemini connection failed: ' + error.message
                 });
             }
         });
@@ -339,7 +339,7 @@ class EnhancedNITJSRServer {
         // Test Pinecone connection
         this.app.get('/test-pinecone', async (req, res) => {
             try {
-                const { Pinecone } = require('@pinecone-database/pinecone');
+                const { Pinecone } = await import('@pinecone-database/pinecone');
                 const pinecone = new Pinecone({
                     apiKey: process.env.PINECONE_API_KEY.trim(),
                 });
@@ -350,7 +350,7 @@ class EnhancedNITJSRServer {
 
                 res.json({
                     success: true,
-                    message: 'Enhanced Pinecone connection successful',
+                    message: 'Pinecone connection successful',
                     targetIndex: targetIndex,
                     indexExists: indexExists,
                     availableIndexes: indexList.indexes?.map(i => i.name) || [],
@@ -360,7 +360,7 @@ class EnhancedNITJSRServer {
             } catch (error) {
                 res.status(500).json({
                     success: false,
-                    error: 'Enhanced Pinecone connection failed: ' + error.message
+                    error: 'Pinecone connection failed: ' + error.message
                 });
             }
         });
@@ -394,12 +394,12 @@ class EnhancedNITJSRServer {
 
     async initializeSystem() {
         if (this.isInitialized) {
-            console.log('✅ Enhanced system already initialized');
+            console.log('✅ System already initialized');
             return;
         }
 
         try {
-            // Initialize enhanced RAG system
+            // Initialize RAG system
             await this.ragSystem.initialize();
 
             // Check for existing scraped data
@@ -408,17 +408,10 @@ class EnhancedNITJSRServer {
 
             try {
                 const files = await fs.readdir(dataDir);
-                const enhancedFiles = files
-                    .filter(f => f.startsWith('nitjsr_enhanced_comprehensive_') && f.endsWith('.json'))
+                const allFiles = files
+                    .filter(f => f.endsWith('.json'))
                     .sort()
                     .reverse(); // Most recent first
-
-                const regularFiles = files
-                    .filter(f => f.startsWith('nitjsr_comprehensive_') && f.endsWith('.json'))
-                    .sort()
-                    .reverse();
-
-                const allFiles = [...enhancedFiles, ...regularFiles];
 
                 if (allFiles.length > 0) {
                     console.log(`📂 Loading existing data: ${allFiles[0]}`);
@@ -429,23 +422,23 @@ class EnhancedNITJSRServer {
                 console.log('📝 No existing data found, will need fresh scrape');
             }
 
-            // If no data exists, perform initial enhanced scrape
+            // If no data exists, perform initial scrape
             if (!latestData) {
-                console.log('🚀 Performing initial enhanced comprehensive data scrape...');
+                console.log('🚀 Performing initial comprehensive data scrape...');
                 const scrapeResult = await this.scraper.scrapeComprehensive();
                 latestData = JSON.parse(await fs.readFile(scrapeResult.filepath, 'utf8'));
             }
 
-            // Process and store documents with enhanced system
+            // Process and store documents
             if (latestData) {
                 await this.ragSystem.processAndStoreDocuments(latestData);
             }
 
             this.isInitialized = true;
-            console.log('🎉 Enhanced Gemini RAG system initialization completed successfully!');
+            console.log('🎉 Gemini RAG system initialization completed successfully!');
 
         } catch (error) {
-            console.error('❌ Enhanced system initialization failed:', error.message);
+            console.error('❌ System initialization failed:', error.message);
             throw error;
         }
     }
@@ -453,20 +446,20 @@ class EnhancedNITJSRServer {
     async start(port = process.env.PORT || 3000) {
         try {
             this.server = this.app.listen(port, async () => {
-                console.log(`🚀 Enhanced NIT Jamshedpur Gemini RAG Server running on port ${port}`);
-                console.log(`🤖 AI Provider: Google Gemini (Enhanced v2.0)`);
+                console.log(`🚀 NIT Jamshedpur Gemini RAG Server running on port ${port}`);
+                console.log(`🤖 AI Provider: Google Gemini`);
                 console.log(`📍 Health check: http://localhost:${port}/health`);
                 console.log(`💬 Frontend: http://localhost:${port}`);
                 console.log(`📊 Statistics: http://localhost:${port}/stats`);
                 console.log(`🔗 Links: http://localhost:${port}/links`);
                 console.log(`🧪 Test Gemini: http://localhost:${port}/test-gemini`);
                 console.log(`🧪 Test Pinecone: http://localhost:${port}/test-pinecone`);
-                
+
                 // Auto-initialize on startup
                 try {
-                    console.log('🔄 Auto-initializing Enhanced Gemini RAG system...');
+                    console.log('🔄 Auto-initializing Gemini RAG system...');
                     await this.initializeSystem();
-                    console.log('✅ Enhanced server fully operational with Gemini AI!');
+                    console.log('✅ Server fully operational with Gemini AI!');
                 } catch (error) {
                     console.error('⚠️ Auto-initialization failed:', error.message);
                     console.log('💡 Manual initialization: POST /initialize');
@@ -479,16 +472,16 @@ class EnhancedNITJSRServer {
             process.on('SIGINT', () => this.shutdown());
 
         } catch (error) {
-            console.error('❌ Enhanced server startup failed:', error.message);
+            console.error('❌ Server startup failed:', error.message);
             process.exit(1);
         }
     }
 
     async shutdown() {
-        console.log('🛑 Shutting down enhanced server...');
+        console.log('🛑 Shutting down server...');
         if (this.server) {
             this.server.close(() => {
-                console.log('✅ Enhanced server shutdown complete');
+                console.log('✅ Server shutdown complete');
                 process.exit(0);
             });
         }
@@ -496,9 +489,7 @@ class EnhancedNITJSRServer {
 }
 
 // Start server if this file is run directly
-if (require.main === module) {
-    const server = new EnhancedNITJSRServer();
-    server.start();
-}
+const server = new NITJSRServer();
+server.start();
 
-module.exports = { EnhancedNITJSRServer };
+export { NITJSRServer };

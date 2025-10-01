@@ -1,30 +1,24 @@
-const fs = require('fs').promises;
-const path = require('path');
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import puppeteer from 'puppeteer';
+import axios from 'axios';
+import pdfParse from 'pdf-parse';
 
-// Try to load optional dependencies
-let puppeteer, axios, pdfParse, cheerio;
-try {
-    puppeteer = require('puppeteer');
-} catch (e) { console.warn('Puppeteer not available:', e.message); }
-try {
-    axios = require('axios');
-} catch (e) { console.warn('Axios not available:', e.message); }
-try {
-    pdfParse = require('pdf-parse');
-} catch (e) { console.warn('PDF-parse not available:', e.message); }
-try {
-    cheerio = require('cheerio');
-} catch (e) { console.warn('Cheerio not available:', e.message); }
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-class NITJSRComprehensiveScraper {
+class NITJSRScraper {
     constructor(options = {}) {
         this.browser = null;
         this.page = null;
         this.visited = new Set();
         this.toVisit = new Set();
-        this.maxPages = options.maxPages || 100;
-        this.maxDepth = options.maxDepth || 3;
-        this.delay = options.delay || 2000;
+        this.pdfUrls = new Set();
+        this.maxPages = options.maxPages || 300; // Increased limit
+        this.maxDepth = options.maxDepth || 4;   // Deeper crawling
+        this.delay = options.delay || 1500;
         this.baseUrl = 'https://nitjsr.ac.in';
         
         this.scrapedData = {
@@ -32,7 +26,7 @@ class NITJSRComprehensiveScraper {
                 timestamp: new Date().toISOString(),
                 source: 'NIT Jamshedpur Official Website',
                 baseUrl: this.baseUrl,
-                scrapeType: 'comprehensive',
+                scrapeType: 'enhanced_comprehensive',
                 maxPages: this.maxPages,
                 maxDepth: this.maxDepth
             },
@@ -41,6 +35,12 @@ class NITJSRComprehensiveScraper {
                 pdfs: [],
                 images: [],
                 other: []
+            },
+            links: {
+                internal: [],
+                external: [],
+                pdf: [],
+                image: []
             },
             categories: {
                 academics: [],
@@ -66,7 +66,7 @@ class NITJSRComprehensiveScraper {
     }
 
     async initialize() {
-        console.log('🚀 Initializing Comprehensive Website Scraper...');
+        console.log('🚀 Initializing NIT JSR Website Scraper...');
         if (!puppeteer) {
             console.warn('⚠️ Puppeteer not available, scraper will work with limited functionality');
             return;
@@ -80,17 +80,16 @@ class NITJSRComprehensiveScraper {
                 '--disable-dev-shm-usage',
                 '--disable-web-security',
                 '--disable-features=VizDisplayCompositor',
-                '--disable-images', // Speed optimization
-                '--disable-javascript', // For some pages, speed optimization
             ]
         });
         this.page = await this.browser.newPage();
         
-        // Set user agent
         await this.page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
         await this.page.setViewport({ width: 1920, height: 1080 });
         
-        console.log('✅ Comprehensive scraper initialized successfully');
+        await this.page.setJavaScriptEnabled(true);
+        
+        console.log('✅ Enhanced scraper initialized successfully');
     }
 
     categorizeUrl(url, content = '') {
@@ -98,43 +97,55 @@ class NITJSRComprehensiveScraper {
         const contentLower = content.toLowerCase();
         
         if (urlLower.includes('placement') || contentLower.includes('placement') || 
-            urlLower.includes('career') || contentLower.includes('career')) {
+            urlLower.includes('career') || contentLower.includes('career') ||
+            urlLower.includes('training') || contentLower.includes('corporate')) {
             return 'placements';
         }
         if (urlLower.includes('admission') || urlLower.includes('apply') || 
-            contentLower.includes('admission') || contentLower.includes('eligibility')) {
+            contentLower.includes('admission') || contentLower.includes('eligibility') ||
+            urlLower.includes('entrance') || urlLower.includes('jee')) {
             return 'admissions';
         }
         if (urlLower.includes('academic') || urlLower.includes('syllabus') || 
-            urlLower.includes('curriculum') || contentLower.includes('academic')) {
+            urlLower.includes('curriculum') || contentLower.includes('academic') ||
+            urlLower.includes('course') || urlLower.includes('program')) {
             return 'academics';
         }
         if (urlLower.includes('faculty') || urlLower.includes('staff') || 
-            contentLower.includes('professor') || contentLower.includes('faculty')) {
+            contentLower.includes('professor') || contentLower.includes('faculty') ||
+            urlLower.includes('teacher') || urlLower.includes('hod')) {
             return 'faculty';
         }
         if (urlLower.includes('student') || urlLower.includes('hostel') || 
-            contentLower.includes('student life') || urlLower.includes('activity')) {
+            contentLower.includes('student life') || urlLower.includes('activity') ||
+            urlLower.includes('club') || urlLower.includes('society')) {
             return 'students';
         }
         if (urlLower.includes('research') || urlLower.includes('publication') || 
-            contentLower.includes('research') || urlLower.includes('phd')) {
+            contentLower.includes('research') || urlLower.includes('phd') ||
+            urlLower.includes('project') || urlLower.includes('innovation')) {
             return 'research';
         }
         if (urlLower.includes('department') || urlLower.includes('dept') || 
-            urlLower.includes('/cse') || urlLower.includes('/ece') || urlLower.includes('/mech')) {
+            urlLower.includes('/cse') || urlLower.includes('/ece') || urlLower.includes('/mech') ||
+            urlLower.includes('/eee') || urlLower.includes('/civil') || urlLower.includes('/che') ||
+            urlLower.includes('/mme') || urlLower.includes('/phy') || urlLower.includes('/chem') ||
+            urlLower.includes('/math') || urlLower.includes('/hss')) {
             return 'departments';
         }
         if (urlLower.includes('news') || urlLower.includes('announcement') || 
-            contentLower.includes('news') || urlLower.includes('notice')) {
+            contentLower.includes('news') || urlLower.includes('notice') ||
+            urlLower.includes('tender') || urlLower.includes('recruitment')) {
             return 'news';
         }
         if (urlLower.includes('event') || urlLower.includes('seminar') || 
-            urlLower.includes('workshop') || contentLower.includes('event')) {
+            urlLower.includes('workshop') || contentLower.includes('event') ||
+            urlLower.includes('conference') || urlLower.includes('symposium')) {
             return 'events';
         }
         if (urlLower.includes('admin') || urlLower.includes('office') || 
-            urlLower.includes('registrar') || contentLower.includes('administration')) {
+            urlLower.includes('registrar') || contentLower.includes('administration') ||
+            urlLower.includes('director') || urlLower.includes('dean')) {
             return 'administration';
         }
         
@@ -151,7 +162,7 @@ class NITJSRComprehensiveScraper {
             }
             
             // Skip certain file types and external links
-            const skipExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.css', '.js', '.ico', '.svg'];
+            const skipExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.css', '.js', '.ico', '.svg', '.woff', '.woff2', '.ttf'];
             const skipPatterns = [
                 'mailto:', 'tel:', 'javascript:', '#',
                 'facebook.com', 'twitter.com', 'linkedin.com', 'youtube.com',
@@ -179,16 +190,35 @@ class NITJSRComprehensiveScraper {
             return null;
         }
 
-        console.log(`🔍 Scraping [${depth}/${this.maxDepth}]: ${url}`);
+        console.log(`🔍 Scraping [${depth}/${this.maxDepth}] (${this.visited.size}/${this.maxPages}): ${url}`);
         this.visited.add(url);
 
         try {
             await this.page.goto(url, { 
-                waitUntil: 'domcontentloaded', 
-                timeout: 30000 
+                waitUntil: 'networkidle0', 
+                timeout: 45000 
             });
 
+            // Wait for dynamic content to load
             await this.page.waitForTimeout(this.delay);
+
+            // Try to load more content by scrolling
+            await this.page.evaluate(() => {
+                return new Promise((resolve) => {
+                    let totalHeight = 0;
+                    const distance = 100;
+                    const timer = setInterval(() => {
+                        const scrollHeight = document.body.scrollHeight;
+                        window.scrollBy(0, distance);
+                        totalHeight += distance;
+
+                        if(totalHeight >= scrollHeight){
+                            clearInterval(timer);
+                            resolve();
+                        }
+                    }, 100);
+                });
+            });
 
             const pageData = await this.page.evaluate(() => {
                 const data = {
@@ -199,7 +229,9 @@ class NITJSRComprehensiveScraper {
                     metadata: {
                         description: '',
                         keywords: ''
-                    }
+                    },
+                    tables: [],
+                    lists: []
                 };
 
                 // Extract meta information
@@ -222,30 +254,53 @@ class NITJSRComprehensiveScraper {
                     });
                 });
 
-                // Extract meaningful content (paragraphs, lists, tables)
+                // Extract meaningful content with better selectors
                 const contentSelectors = [
-                    'p', 'li', 'td', 'th', 'div.content', 
-                    '.main-content', '.page-content', '.article-content'
+                    'p', 'div.content', '.main-content', '.page-content', '.article-content',
+                    '.description', '.info', '.details', '.summary', 
+                    'article', 'section', '.text-content'
                 ];
                 
                 contentSelectors.forEach(selector => {
                     document.querySelectorAll(selector).forEach(element => {
                         const text = element.textContent.trim();
-                        if (text && text.length > 20) { // Filter out short/meaningless text
+                        if (text && text.length > 30 && !data.content.some(existing => existing.includes(text.substring(0, 50)))) {
                             data.content.push(text);
                         }
                     });
                 });
 
-                // Extract internal links
+                document.querySelectorAll('table').forEach(table => {
+                    const tableData = [];
+                    table.querySelectorAll('tr').forEach(row => {
+                        const rowData = [];
+                        row.querySelectorAll('td, th').forEach(cell => {
+                            rowData.push(cell.textContent.trim());
+                        });
+                        if (rowData.length > 0) tableData.push(rowData);
+                    });
+                    if (tableData.length > 0) data.tables.push(tableData);
+                });
+
+                document.querySelectorAll('ul, ol').forEach(list => {
+                    const listItems = [];
+                    list.querySelectorAll('li').forEach(item => {
+                        const text = item.textContent.trim();
+                        if (text && text.length > 10) listItems.push(text);
+                    });
+                    if (listItems.length > 0) data.lists.push(listItems);
+                });
+
                 document.querySelectorAll('a[href]').forEach(link => {
                     const href = link.getAttribute('href');
                     const text = link.textContent.trim();
-                    if (href && text) {
+                    if (href) {
                         data.links.push({
                             href: href,
-                            text: text,
-                            title: link.getAttribute('title') || ''
+                            text: text || href,
+                            title: link.getAttribute('title') || '',
+                            className: link.className || '',
+                            parentText: link.parentElement ? link.parentElement.textContent.trim().substring(0, 100) : ''
                         });
                     }
                 });
@@ -253,37 +308,66 @@ class NITJSRComprehensiveScraper {
                 return data;
             });
 
-            // Process the scraped data
+            const allContent = [
+                pageData.title,
+                ...pageData.headings.map(h => h.text),
+                ...pageData.content,
+                ...pageData.tables.flat().flat(),
+                ...pageData.lists.flat(),
+                pageData.metadata.description,
+                pageData.metadata.keywords
+            ].filter(Boolean).join(' ');
+
             const processedPage = {
                 url: url,
                 timestamp: new Date().toISOString(),
                 depth: depth,
                 title: pageData.title,
                 headings: pageData.headings,
-                content: pageData.content.join(' '), // Join all content
+                content: allContent,
+                rawContent: pageData.content,
+                tables: pageData.tables,
+                lists: pageData.lists,
                 links: pageData.links,
                 metadata: pageData.metadata,
-                category: this.categorizeUrl(url, pageData.content.join(' ')),
-                wordCount: pageData.content.join(' ').split(' ').length
+                category: this.categorizeUrl(url, allContent),
+                wordCount: allContent.split(' ').length
             };
 
-            // Add to appropriate category
             this.scrapedData.categories[processedPage.category].push(processedPage);
             this.scrapedData.pages.push(processedPage);
 
-            // Add new links to visit queue
             pageData.links.forEach(link => {
                 try {
                     const fullUrl = new URL(link.href, url).href;
-                    if (this.isValidUrl(fullUrl) && !this.visited.has(fullUrl)) {
-                        this.toVisit.add({url: fullUrl, depth: depth + 1});
+                    const linkData = {
+                        url: fullUrl,
+                        text: link.text,
+                        title: link.title,
+                        sourceUrl: url,
+                        sourceTitle: pageData.title,
+                        context: link.parentText
+                    };
+
+                    if (link.href.toLowerCase().includes('.pdf')) {
+                        this.scrapedData.links.pdf.push(linkData);
+                        this.pdfUrls.add(fullUrl);
+                    } else if (link.href.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp)$/)) {
+                        this.scrapedData.links.image.push(linkData);
+                    } else if (fullUrl.includes('nitjsr.ac.in')) {
+                        this.scrapedData.links.internal.push(linkData);
+                        if (this.isValidUrl(fullUrl) && !this.visited.has(fullUrl)) {
+                            this.toVisit.add({url: fullUrl, depth: depth + 1});
+                        }
+                    } else {
+                        this.scrapedData.links.external.push(linkData);
                     }
                 } catch (error) {
                     // Invalid URL, skip
                 }
             });
 
-            console.log(`✅ Scraped: ${pageData.title} (${pageData.content.length} content items)`);
+            console.log(`✅ Scraped: ${pageData.title} (${allContent.split(' ').length} words, ${pageData.links.length} links)`);
             return processedPage;
 
         } catch (error) {
@@ -292,54 +376,46 @@ class NITJSRComprehensiveScraper {
         }
     }
 
-    async scrapePDFDocuments() {
-        if (!axios || !pdfParse) {
-            console.log('📄 Skipping PDF scraping (dependencies not available)');
-            return;
-        }
+    async processPDFDocuments() {
+        console.log(`📄 Processing ${this.pdfUrls.size} discovered PDF documents...`);
+        
+        const pdfArray = Array.from(this.pdfUrls);
+        const maxPdfs = Math.min(pdfArray.length, 50); // Increased PDF limit
 
-        console.log('📄 Discovering and processing PDF documents...');
-        const pdfLinks = new Set();
-
-        // Collect PDF links from all scraped pages
-        this.scrapedData.pages.forEach(page => {
-            page.links.forEach(link => {
-                if (link.href.toLowerCase().includes('.pdf')) {
-                    try {
-                        const fullUrl = new URL(link.href, page.url).href;
-                        pdfLinks.add(fullUrl);
-                    } catch (error) {
-                        // Invalid URL
-                    }
-                }
-            });
-        });
-
-        console.log(`📄 Found ${pdfLinks.size} PDF documents to process`);
-
-        for (const pdfUrl of Array.from(pdfLinks).slice(0, 20)) { // Limit to 20 PDFs
+        for (let i = 0; i < maxPdfs; i++) {
+            const pdfUrl = pdfArray[i];
             try {
-                console.log(`📖 Processing PDF: ${pdfUrl}`);
+                console.log(`📖 Processing PDF ${i + 1}/${maxPdfs}: ${pdfUrl}`);
+                
                 const response = await axios.get(pdfUrl, { 
                     responseType: 'arraybuffer',
-                    timeout: 30000,
+                    timeout: 60000, // Increased timeout
                     headers: {
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                    }
+                    },
+                    maxContentLength: 50 * 1024 * 1024 // 50MB limit
                 });
 
                 const pdfData = await pdfParse(response.data);
                 
-                this.scrapedData.documents.pdfs.push({
+                // Find the link information for this PDF
+                const linkInfo = this.scrapedData.links.pdf.find(link => link.url === pdfUrl);
+                
+                const pdfDoc = {
                     url: pdfUrl,
-                    title: pdfUrl.split('/').pop(),
+                    title: linkInfo ? linkInfo.text : pdfUrl.split('/').pop(),
                     text: pdfData.text,
                     pages: pdfData.numpages,
                     category: this.categorizeUrl(pdfUrl, pdfData.text),
-                    timestamp: new Date().toISOString()
-                });
+                    timestamp: new Date().toISOString(),
+                    sourceUrl: linkInfo ? linkInfo.sourceUrl : '',
+                    sourceTitle: linkInfo ? linkInfo.sourceTitle : '',
+                    context: linkInfo ? linkInfo.context : '',
+                    wordCount: pdfData.text.split(' ').length
+                };
 
-                console.log(`✅ Processed PDF: ${pdfData.numpages} pages`);
+                this.scrapedData.documents.pdfs.push(pdfDoc);
+                console.log(`✅ Processed PDF: ${pdfData.numpages} pages, ${pdfDoc.wordCount} words`);
 
             } catch (error) {
                 console.error(`❌ Failed to process PDF ${pdfUrl}:`, error.message);
@@ -351,16 +427,35 @@ class NITJSRComprehensiveScraper {
         try {
             await this.initialize();
             
-            // Start with main sections of the website
+            //TODO: Add more start URLs
             const startUrls = [
                 'https://nitjsr.ac.in/',
                 'https://nitjsr.ac.in/Students/Placements',
+                'https://nitjsr.ac.in/Students/Training-Placements',
                 'https://nitjsr.ac.in/Admissions',
                 'https://nitjsr.ac.in/Academics',
                 'https://nitjsr.ac.in/Faculty',
                 'https://nitjsr.ac.in/Research',
                 'https://nitjsr.ac.in/Students',
-                'https://nitjsr.ac.in/Administration'
+                'https://nitjsr.ac.in/Administration',
+                'https://nitjsr.ac.in/Departments/CSE',
+                'https://nitjsr.ac.in/Departments/ECE',
+                'https://nitjsr.ac.in/Departments/EEE',
+                'https://nitjsr.ac.in/Departments/ME',
+                'https://nitjsr.ac.in/Departments/CE',
+                'https://nitjsr.ac.in/Departments/CHE',
+                'https://nitjsr.ac.in/Departments/MME',
+                'https://nitjsr.ac.in/Departments/Physics',
+                'https://nitjsr.ac.in/Departments/Chemistry',
+                'https://nitjsr.ac.in/Departments/Mathematics',
+                'https://nitjsr.ac.in/Departments/HSS',
+                'https://nitjsr.ac.in/About',
+                'https://nitjsr.ac.in/Infrastructure',
+                'https://nitjsr.ac.in/News',
+                'https://nitjsr.ac.in/Events',
+                'https://nitjsr.ac.in/Tenders',
+                'https://nitjsr.ac.in/Recruitments',
+                'https://nitjsr.ac.in/People/Faculty'//Doesn't work IDK why
             ];
 
             // Add starting URLs to visit queue
@@ -368,25 +463,21 @@ class NITJSRComprehensiveScraper {
                 this.toVisit.add({url: url, depth: 0});
             });
 
-            console.log(`🌐 Starting comprehensive scrape of ${startUrls.length} main sections...`);
+            console.log(`🌐 Starting enhanced comprehensive scrape of ${startUrls.length} main sections...`);
 
-            // Process queue with breadth-first approach
             while (this.toVisit.size > 0 && this.visited.size < this.maxPages) {
                 const {url, depth} = Array.from(this.toVisit)[0];
                 this.toVisit.delete(Array.from(this.toVisit)[0]);
 
                 await this.scrapePage(url, depth);
                 
-                // Show progress
-                if (this.visited.size % 10 === 0) {
-                    console.log(`📊 Progress: ${this.visited.size}/${this.maxPages} pages scraped`);
+                if (this.visited.size % 20 === 0) {
+                    console.log(`📊 Progress: ${this.visited.size}/${this.maxPages} pages scraped, ${this.pdfUrls.size} PDFs found`);
                 }
             }
 
-            // Process PDFs
-            await this.scrapePDFDocuments();
+            await this.processPDFDocuments();
 
-            // Update statistics
             this.updateStatistics();
 
             const result = await this.saveData();
@@ -395,7 +486,7 @@ class NITJSRComprehensiveScraper {
             return result;
 
         } catch (error) {
-            console.error('❌ Comprehensive scraping failed:', error.message);
+            console.error('❌ Enhanced comprehensive scraping failed:', error.message);
             await this.cleanup();
             throw error;
         }
@@ -404,16 +495,18 @@ class NITJSRComprehensiveScraper {
     updateStatistics() {
         this.scrapedData.statistics.totalPages = this.scrapedData.pages.length;
         this.scrapedData.statistics.totalPDFs = this.scrapedData.documents.pdfs.length;
-        this.scrapedData.statistics.totalLinks = this.scrapedData.pages.reduce(
-            (sum, page) => sum + page.links.length, 0
-        );
+        this.scrapedData.statistics.totalLinks = 
+            this.scrapedData.links.internal.length + 
+            this.scrapedData.links.external.length + 
+            this.scrapedData.links.pdf.length + 
+            this.scrapedData.links.image.length;
         this.scrapedData.statistics.categorizedPages = Object.values(this.scrapedData.categories)
             .reduce((sum, category) => sum + category.length, 0);
     }
 
     async saveData() {
         const timestamp = new Date().toISOString().replace(/[:.]/g, '_');
-        const filename = `nitjsr_comprehensive_${timestamp}.json`;
+        const filename = `nitjsr_enhanced_comprehensive_${timestamp}.json`;
         const filepath = path.join(__dirname, 'scraped_data', filename);
 
         // Ensure directory exists
@@ -432,10 +525,18 @@ class NITJSRComprehensiveScraper {
                 name: cat,
                 count: this.scrapedData.categories[cat].length
             })),
+            pdfBreakdown: this.scrapedData.documents.pdfs.map(pdf => ({
+                title: pdf.title,
+                pages: pdf.pages,
+                wordCount: pdf.wordCount,
+                category: pdf.category
+            })),
             filepath: filepath
         };
 
         console.log(`💾 Data saved to: ${filepath}`);
+        console.log(`📊 Summary: ${summary.totalPages} pages, ${summary.totalPDFs} PDFs, ${summary.totalLinks} links`);
+
         return { summary, filepath, data: this.scrapedData };
     }
 
@@ -447,24 +548,4 @@ class NITJSRComprehensiveScraper {
     }
 }
 
-// CLI usage
-if (require.main === module) {
-    (async () => {
-        const scraper = new NITJSRComprehensiveScraper({
-            maxPages: 50,  // Limit for testing
-            maxDepth: 3,
-            delay: 1000
-        });
-        
-        try {
-            const result = await scraper.scrapeComprehensive();
-            console.log('🎉 Comprehensive scraping completed successfully!');
-            console.log('📋 Summary:', result.summary);
-        } catch (error) {
-            console.error('💥 Comprehensive scraping failed:', error.message);
-            process.exit(1);
-        }
-    })();
-}
-
-module.exports = { NITJSRComprehensiveScraper };
+export { NITJSRScraper };

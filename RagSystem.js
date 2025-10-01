@@ -1,12 +1,12 @@
-require('dotenv').config();
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { Pinecone } = require('@pinecone-database/pinecone');
-const { RecursiveCharacterTextSplitter } = require('langchain/text_splitter');
-const { GoogleGenerativeAIEmbeddings } = require('@langchain/google-genai');
-const fs = require('fs').promises;
-const path = require('path');
+import dotenv from 'dotenv';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { Pinecone } from '@pinecone-database/pinecone';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { GoogleGenerativeAIEmbeddings } from '@langchain/google-genai';
 
-class EnhancedNITJSRRAGSystem {
+dotenv.config();
+
+class NITJSRRAGSystem {
     constructor() {
         this.genAI = null;
         this.pinecone = null;
@@ -21,7 +21,7 @@ class EnhancedNITJSRRAGSystem {
     async initialize() {
         if (this.isInitialized) return;
 
-        console.log('🚀 Initializing Enhanced Gemini + Pinecone RAG System...');
+        console.log('🚀 Initializing Gemini + Pinecone RAG System...');
 
         try {
             // Initialize Google Gemini
@@ -49,7 +49,7 @@ class EnhancedNITJSRRAGSystem {
             });
 
             this.isInitialized = true;
-            console.log('✅ Enhanced Gemini RAG System initialized successfully!');
+            console.log('✅ Gemini RAG System initialized successfully!');
 
         } catch (error) {
             console.error('❌ RAG System initialization failed:', error.message);
@@ -444,7 +444,7 @@ class EnhancedNITJSRRAGSystem {
     }
 
     async generateResponse(question, relevantDocuments) {
-        console.log('🤖 Generating enhanced response with Gemini...');
+        console.log('🤖 Generating response with Gemini...');
 
         try {
             // Find relevant links
@@ -494,9 +494,9 @@ Answer:`;
             const response = result.response;
             const text = response.text();
 
-            console.log('✅ Enhanced response generated successfully');
+            console.log('✅ Response generated successfully');
 
-            // Prepare enhanced sources with links
+            // Prepare sources with links
             const enhancedSources = relevantDocuments.map(doc => ({
                 text: doc.text.substring(0, 200) + '...',
                 source: doc.metadata.source,
@@ -548,12 +548,12 @@ Answer:`;
                 };
             }
 
-            // Generate enhanced response
+            // Generate response
             const response = await this.generateResponse(question, relevantDocs);
             return response;
 
         } catch (error) {
-            console.error('❌ Enhanced chat error:', error.message);
+            console.error('❌ Chat error:', error.message);
             throw error;
         }
     }
@@ -568,7 +568,7 @@ Answer:`;
                 linkDatabaseSize: this.linkDatabase.size
             };
         } catch (error) {
-            console.error('❌ Error getting enhanced index stats:', error.message);
+            console.error('❌ Error getting index stats:', error.message);
             return { error: error.message };
         }
     }
@@ -586,4 +586,4 @@ Answer:`;
     }
 }
 
-module.exports = { EnhancedNITJSRRAGSystem };
+export { NITJSRRAGSystem };
