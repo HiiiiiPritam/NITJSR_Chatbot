@@ -1,7 +1,7 @@
 {
-  "name": "nitjsr-rag-chatbot",
+  "name": "jharkhand-gscc-rag-chatbot",
   "version": "1.0.0",
-  "description": "RAG-powered chatbot for NIT Jamshedpur placement information",
+  "description": "RAG-powered chatbot for Jharkhand Goverment Student Credit Card scheme",
   "main": "server.js",
   "type": "module",
   "scripts": {

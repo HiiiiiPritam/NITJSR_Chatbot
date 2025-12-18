@@ -115,8 +115,8 @@ export function getLanguageInstruction(language) {
 
 export function getNoDocumentsFallback(language) {
     const fallbacks = {
-        english: "I don't have specific information about that topic in the NIT Jamshedpur data. Could you please rephrase your question or ask about placements, academics, faculty, departments, or other college-related topics?",
-        hindi: "मेरे पास एनआईटी जमशेदपुर डेटा में उस विषय के बारे में विशिष्ट जानकारी नहीं है। क्या आप कृपया अपना प्रश्न दोबारा बता सकते हैं या प्लेसमेंट, शिक्षा, संकाय, विभाग या अन्य कॉलेज से संबंधित विषयों के बारे में पूछ सकते हैं?",
+        english: "I don't have specific information about that topic in the Jharkhand Government GSCC (Guruji Student Credit Card) scheme data. Could you please rephrase your question or ask about scheme benefits, eligibility, application process, or required documents?",
+        hindi: "मेरे पास झारखंड सरकार की गुरुजी स्टूडेंट क्रेडिट कार्ड योजना (GSCC) के बारे में इस विषय पर विशिष्ट जानकारी नहीं है। कृपया अपना प्रश्न दोबारा पूछें या योजना के लाभ, पात्रता, आवेदन प्रक्रिया या आवश्यक दस्तावेजों के बारे में पूछें।",
     };
 
     return fallbacks[language?.toLowerCase()] || fallbacks.english;

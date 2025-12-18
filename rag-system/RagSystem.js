@@ -14,11 +14,14 @@ function getLanguageInstruction(language) {
     if (language === 'hindi') {
         return '\n\nIMPORTANT: You MUST respond ONLY in Hindi (Devanagari script: हिंदी). Use simple, clear Hindi language. Translate all technical terms to Hindi where possible, but you may keep English terms in parentheses for clarity when needed. The entire response should be in Hindi script, EVEN IF THE USER ASKS A QUESTION IN ANY OTHER LANGUAGE!';
     }
+    if (language === 'urdu') {
+        return '\n\nIMPORTANT: You MUST respond ONLY in Urdu (Nastaliq script). Use simple, clear Urdu language. The entire response should be in Urdu script, EVEN IF THE USER ASKS A QUESTION IN ANY OTHER LANGUAGE!';
+    }
     return '\n\nIMPORTANT: You MUST respond ONLY in English. Use clear, professional English language, EVEN IF THE USER ASKS A QUESTION IN ANY OTHER LANGUAGE!';
 }
 
 
-class NITJSRRAGSystem {
+class JharkhandGovRAGSystem {
     constructor(options = {}) {
         const { mongo = null } = options || {};
         this.genAI = null;
@@ -796,8 +799,8 @@ class NITJSRRAGSystem {
             if (relevantDocs.length === 0) {
                 const fallback =
                     language === "hindi"
-                        ? "मेरे पास उस विषय के बारे में विशिष्ट जानकारी नहीं है। क्या आप कृपया अपना प्रश्न दोबारा बता सकते हैं या प्लेसमेंट, शिक्षाविदों, संकाय, विभागों या अन्य कॉलेज से संबंधित विषयों के बारे में पूछ सकते हैं?"
-                        : "I don't have specific information about that topic in the NIT Jamshedpur data. Could you please rephrase your question or ask about placements, academics, faculty, departments, or other college-related topics?";
+                        ? "मेरे पास झारखंड सरकार की गुरुजी स्टूडेंट क्रेडिट कार्ड योजना (GSCC) के बारे में इस विषय पर विशिष्ट जानकारी नहीं है। कृपया अपना प्रश्न दोबारा पूछें या योजना के लाभ, पात्रता, आवेदन प्रक्रिया या आवश्यक दस्तावेजों के बारे में पूछें।"
+                        : "I don't have specific information about that topic in the Jharkhand Government GSCC (Guruji Student Credit Card) scheme data. Could you please rephrase your question or ask about scheme benefits, eligibility, application process, or required documents?";
 
                 if (typeof onChunk === "function") {
                     try {
@@ -847,7 +850,8 @@ class NITJSRRAGSystem {
             const historySection = formatConversationHistory(history);
 
             const prompt = `
-            You are an AI assistant specializing in NIT Jamshedpur information. Your role is to provide accurate, helpful, and contextually aware responses based on the provided data and conversation history.
+            You are an AI assistant specializing in the Jharkhand Government's Guruji Student Credit Card (GSCC) scheme. Your role is to provide accurate, helpful, and contextually aware responses based on the provided scheme data and conversation history.
+            You help students understand eligibility, how to apply, loan limits, interest rates (which are very low, around 4% simple interest), and other scholarship-related queries for Jharkhand students.
             ${languageInstruction}
             
             ${historySection ? historySection : ""}
@@ -987,11 +991,33 @@ class NITJSRRAGSystem {
     }
 
 
-  async clearIndex() {
+    async clearIndex() {
+        if (!this.isInitialized) {
+            await this.initialize();
+        }
+
         console.log("Clearing Pinecone index and link database...");
         try {
-            await this.index.deleteAll();
+            // deleteAll() can throw 404 on some serverless index states if already empty
+            await this.index.deleteAll().catch(err => {
+                if (err.message?.includes('404')) {
+                    console.log("[pinecone] Index already appears to be empty (received 404).");
+                } else {
+                    throw err;
+                }
+            });
+            
             this.linkDatabase.clear();
+
+            // Also clear MongoDB ledger if possible
+            if (this.mongoAvailable()) {
+                console.log("[mongo] Clearing change ledger collections...");
+                await Promise.all([
+                    this.pagesColl.deleteMany({}),
+                    this.chunksColl.deleteMany({})
+                ]);
+            }
+
             console.log("Index and link database cleared successfully");
         } catch (error) {
             console.error("Error clearing index:", error.message);
@@ -1002,4 +1028,4 @@ class NITJSRRAGSystem {
 }
 
 
-export { NITJSRRAGSystem };
+export { JharkhandGovRAGSystem };

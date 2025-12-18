@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { NITJSRScraper } from '../scraper/scraper.js';
+import { JharkhandGovScraper } from '../scraper/scraper.js';
 
 function parseArgs(argv) {
   const args = { maxPages: 20, maxDepth: 4, delay: 1500 };
@@ -23,7 +23,7 @@ async function main() {
   const opts = parseArgs(process.argv);
   console.log(`[scrape] Starting scrape with maxPages=${opts.maxPages}, maxDepth=${opts.maxDepth}, delay=${opts.delay}ms`);
 
-  const scraper = new NITJSRScraper(opts);
+  const scraper = new JharkhandGovScraper(opts);
   const result = await scraper.scrapeComprehensive();
 
   console.log('[scrape] Done.');

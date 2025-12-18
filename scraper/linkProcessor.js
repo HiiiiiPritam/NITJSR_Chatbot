@@ -41,7 +41,7 @@ export class LinkProcessor {
                     this.processPdfLink(fullUrl, linkData, pageUrl);
                 } else if (hrefLower.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
                     this.scrapedData.links.image.push(linkData);
-                } else if (fullUrl.includes('nitjsr.ac.in')) {
+                } else if (fullUrl.includes('jharkhand.gov.in')) {
                     this.processInternalLink(fullUrl, linkData, depth);
                 } else {
                     this.scrapedData.links.external.push(linkData);

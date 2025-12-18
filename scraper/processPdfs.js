@@ -6,14 +6,14 @@ import { exec as _exec } from "child_process";
 import { promisify } from "util";
 import { fileURLToPath } from "url";
 
-import { NITJSRScraper } from "./scraper.js";
+import { JharkhandGovScraper } from "./scraper.js";
 
 const exec = promisify(_exec);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, "..");
 const SCRAPED_DATA_DIR = path.join(ROOT_DIR, "scraped_data");
-const DEFAULT_BASE_URL = "https://nitjsr.ac.in";
+const DEFAULT_BASE_URL = "https://gscc.jharkhand.gov.in";
 
 const normalizePdfKey = (url = "") => {
   if (typeof url !== "string" || !url.trim()) return null;
@@ -289,7 +289,7 @@ async function processPdfs(cliPath) {
   const scrapedData = await loadScrapedJson(targetFile);
   const baseUrl = scrapedData?.metadata?.baseUrl || DEFAULT_BASE_URL;
 
-  const helper = new NITJSRScraper({
+  const helper = new JharkhandGovScraper({
     maxPages: scrapedData?.metadata?.maxPages || 0,
     maxDepth: scrapedData?.metadata?.maxDepth || 0,
   });

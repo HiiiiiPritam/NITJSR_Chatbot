@@ -29,3 +29,6 @@
 
 - **Binary dependencies**  
   Puppeteer downloads Chromium during `npm install`. In containerised environments set `PUPPETEER_SKIP_DOWNLOAD=true` and supply a Chrome or Chromium binary via `PUPPETEER_EXECUTABLE_PATH`.
+
+
+(which are very low, around 4% simple interest  ragSystem

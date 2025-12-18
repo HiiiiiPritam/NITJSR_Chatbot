@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 import { setupAuthRoutes } from './routes/auth.js';
-import { NITJSRRAGSystem } from './rag-system/RagSystem.js';
+import { JharkhandGovRAGSystem } from './rag-system/RagSystem.js';
 import { ResponseCache } from './caching/responseCache.js';
 import { ChatHistory } from './caching/chatHistory.js';
 import { DatabaseManager } from './config/db.js';
@@ -19,7 +19,7 @@ const __dirname = dirname(__filename);
 dotenv.config();
 
 
-class NITJSRServer {
+class JharkhandGovServer {
     constructor() {
         this.app = express();
         this.__dirname = __dirname;
@@ -28,7 +28,7 @@ class NITJSRServer {
         this.dbManager = new DatabaseManager();
 
         // Initialize RAG system with database reference
-        this.ragSystem = new NITJSRRAGSystem({ mongo: this.dbManager.mongo });
+        this.ragSystem = new JharkhandGovRAGSystem({ mongo: this.dbManager.mongo });
 
         // Initialize semantic response cache
         try {
@@ -52,9 +52,9 @@ class NITJSRServer {
             console.warn('[ChatHistory] initialization failed:', error?.message || error);
         }
 
-        // Scraper is optional and only loaded when enabled
         this.scraper = null;
         this.scraperEnabled = (process.env.ENABLE_SCRAPER || '').toLowerCase() === 'true';
+        console.log(`[server] Web scraper is ${this.scraperEnabled ? 'ENABLED' : 'DISABLED'}`);
 
         this.isInitialized = false;
         this._chatRateLimiter = null;
@@ -86,11 +86,11 @@ class NITJSRServer {
         if (this.scraper) {
             return this.scraper;
         }
-        const { NITJSRScraper } = await import('./scraper/scraper.js');
+        const { JharkhandGovScraper } = await import('./scraper/scraper.js');
         const defaultDelay = Number(process.env.SCRAPE_DELAY) || 1500;
         const defaultMaxPages = Number(process.env.SCRAPE_MAX_PAGES) || 650;
         const defaultMaxDepth = Number(process.env.SCRAPE_MAX_DEPTH) || 3;
-        this.scraper = new NITJSRScraper({
+        this.scraper = new JharkhandGovScraper({
             maxPages: defaultMaxPages,
             maxDepth: defaultMaxDepth,
             delay: defaultDelay,
@@ -178,7 +178,7 @@ class NITJSRServer {
 
 
 // Start server if this file is run directly
-const server = new NITJSRServer();
+const server = new JharkhandGovServer();
 server.start();
 
-export { NITJSRServer };
+export { JharkhandGovServer };

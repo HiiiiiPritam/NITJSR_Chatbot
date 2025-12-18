@@ -269,8 +269,8 @@
 <header>
     <div class="container">
         <div class="header-content">
-            <h1>Admin Panel for the NIT Jamshedpur Chatbot</h1>
-            <p>Monitor system health, and inspect API responses</p>
+            <h1>Admin Panel for the Jharkhand GSCC Assistant</h1>
+            <p>Monitor system health, manage data scraping, and trigger embeddings</p>
         </div>
         <button class="logout-btn" onclick="localStorage.removeItem('adminToken'); window.location.href='/admin/login';">Logout</button>
     </div>
@@ -294,12 +294,12 @@
     if(!adminToken) window.location.href = '/admin/login';
 
     const endpoints = [
-        {id:'health',method:'GET',path:'/health',title:'Health Check',description:'Quick status probe for API and downstream services.'},
-        {id:'initialize',method:'POST',path:'/initialize',title:'Initialize RAG System',description:'Validate config & prime embeddings.',sampleBody:{}},
-        {id:'embed-latest',method:'POST',path:'/embed-latest',title:'Embed Latest Dataset',description:'Load newest scrape JSON into Pinecone + Mongo.',sampleBody:{}},
-        {id:'scrape',method:'POST',path:'/scrape',title:'Scrape (Process Only)',description:'Enhanced crawler loads results into Mongo/vector storage.',sampleBody:{force:false,maxPages:4,maxDepth:3,priorityUrls:['https://nitjsr.ac.in/Tender/Active_Tenders'],restrictedUrls:[]}},
-        {id:'scrape-and-embed',method:'POST',path:'/scrape-and-embed',title:'Scrape + Embed',description:'Full pipeline: crawl & push results to vector DB.',sampleBody:{force:false,maxPages:4,maxDepth:3}},
-        {id:'reset-storage',method:'POST',path:'/reset-storage',title:'Reset Storage',description:'Clears Pinecone index, Mongo change ledger, and cache.',sampleBody:{}},
+        {id:'health',method:'GET',path:'/health',title:'Health Check',description:'Quick status probe for API and vector database status.'},
+        {id:'initialize',method:'POST',path:'/initialize',title:'Initialize RAG System',description:'Validate config & prime embeddings (Gemini + Cohere + Pinecone).',sampleBody:{}},
+        {id:'embed-latest',method:'POST',path:'/embed-latest',title:'Embed Latest Dataset',description:'Load newest scrape JSON + local PDFs into Pinecone + Mongo.',sampleBody:{}},
+        {id:'scrape',method:'POST',path:'/scrape',title:'Scrape (Process Only)',description:'Crawls GSCC portal & merges local PDFs. Saves to JSON.',sampleBody:{force:false,maxPages:20,maxDepth:3,priorityUrls:['https://gscc.jharkhand.gov.in/Home/ContactUs'],restrictedUrls:[]}},
+        {id:'scrape-and-embed',method:'POST',path:'/scrape-and-embed',title:'Scrape + Embed',description:'Full pipeline: crawl, merge local PDFs & push to vector DB.',sampleBody:{force:false,maxPages:20,maxDepth:3}},
+        {id:'reset-storage',method:'POST',path:'/reset-storage',title:'Reset Storage',description:'Clears Pinecone index, Mongo change ledger, and semantic cache.',sampleBody:{}},
         {id:'stats',method:'GET',path:'/stats',title:'System Stats',description:'Snapshots Pinecone, Mongo, cache, and scraper metadata.'},
     ];
 

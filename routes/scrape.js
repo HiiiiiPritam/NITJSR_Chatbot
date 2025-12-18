@@ -32,27 +32,48 @@ export function setupScrapeRoutes(app, server) {
             const scraper = await server.ensureScraper();
             const scrapeResult = await scraper.scrapeComprehensive(scrapeOptions);
 
-            // Load and process the scraped data
-            const scrapedData = JSON.parse(await fs.readFile(scrapeResult.filepath, 'utf8'));
-
-            // Clear existing data if force flag is set
-            if (force) {
-                console.log('Clearing existing vector data...');
-                await server.ragSystem.clearIndex();
-            }
-
-            await server.dbManager.ensureMongoConnected();
-
             res.json({
                 success: true,
-                message: 'Comprehensive data scraped and processed successfully',
+                message: 'Comprehensive data scraped successfully (including local PDFs)',
                 summary: scrapeResult.summary,
                 options: scrapeOptions,
                 timestamp: new Date().toISOString(),
-                aiProvider: 'Google Gemini',
             });
         } catch (error) {
             console.error('Scrape error:', error);
+            res.status(500).json({ success: false, error: error.message });
+        }
+    });
+
+    //Embed the latest available scraped file
+    app.post('/embed-latest', authenticateAdmin, async (req, res) => {
+        try {
+            const dataDir = path.join(path.dirname(__dirname), 'scraped_data');
+            const files = await fs.readdir(dataDir);
+            const latestFile = files
+                .filter(f => f.startsWith('jharkhand_gscc_') && f.endsWith('.json'))
+                .sort((a, b) => b.localeCompare(a))
+                [0];
+
+            if (!latestFile) {
+                return res.status(404).json({ success: false, error: 'No scraped data files found' });
+            }
+
+            const filePath = path.join(dataDir, latestFile);
+            const scrapedData = JSON.parse(await fs.readFile(filePath, 'utf8'));
+
+            console.log(`[embed-latest] Processing ${latestFile}...`);
+            await server.ragSystem.initialize();
+            const embedResult = await server.ragSystem.processAndStoreDocuments(scrapedData);
+
+            res.json({
+                success: true,
+                message: `Latest data file (${latestFile}) embedded successfully`,
+                stats: embedResult?.stats,
+                timestamp: new Date().toISOString()
+            });
+        } catch (error) {
+            console.error('[embed-latest] Error:', error);
             res.status(500).json({ success: false, error: error.message });
         }
     });

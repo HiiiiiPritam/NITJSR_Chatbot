@@ -1,5 +1,5 @@
 export class UrlHelpers {
-    constructor(baseUrl = 'https://nitjsr.ac.in') {
+    constructor(baseUrl = 'https://gscc.jharkhand.gov.in') {
         this.baseUrl = baseUrl;
     }
 
@@ -8,8 +8,8 @@ export class UrlHelpers {
             const urlObj = new URL(url, this.baseUrl);
             const normalizedHref = urlObj.href.toLowerCase();
 
-            // Only scrape nitjsr.ac.in domain
-            if (!urlObj.hostname.includes('nitjsr.ac.in')) {
+            // Only scrape jharkhand.gov.in domain
+            if (!urlObj.hostname.includes('jharkhand.gov.in')) {
                 return false;
             }
 

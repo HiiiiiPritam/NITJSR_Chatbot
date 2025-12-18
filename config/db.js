@@ -55,7 +55,7 @@ export class DatabaseManager {
             return this.mongo;
         }
 
-        const dbName = (process.env.MONGODB_DB || 'nitjsr_rag').trim();
+        const dbName = (process.env.MONGODB_DB || 'jharkhand_gscc_rag').trim();
         const pagesName = (process.env.MONGO_PAGES_COLL || 'pages').trim();
         const chunksName = (process.env.MONGO_CHUNKS_COLL || 'chunks').trim();
 

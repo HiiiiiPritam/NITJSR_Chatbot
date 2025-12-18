@@ -217,7 +217,7 @@ export function prepareIngestionItems(scrapedData = {}) {
     };
 
     const statsContent = [
-        `NIT Jamshedpur Website Statistics and Overview:`,
+        `Jharkhand GSCC Website Statistics and Overview:`,
         `Total Pages Scraped: ${scrapedData.statistics?.totalPages || 0}`,
         `Total PDF Documents: ${scrapedData.statistics?.totalPDFs || 0}`,
         `Total Links Found: ${scrapedData.statistics?.totalLinks || 0}`,

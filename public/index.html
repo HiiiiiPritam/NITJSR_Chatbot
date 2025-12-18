@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIT Jamshedpur RAG Chatbot</title>
+    <title>Jharkhand GSCC Scheme Assistant</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="chat-container">
     <div class="chat-header">
-        <img src="./assets/logo.png" alt="NIT Jamshedpur Logo" class="chat-header-logo">
+        <img src="./assets/logo.png" alt="Jharkhand Government Logo" class="chat-header-logo">
         <div class="chat-header-text">
-            <h1>NIT Jamshedpur Chatbot</h1>
-            <p>Powered by LangChain & Pinecone Vector Database</p>
+            <h1>Guruji Student Credit Card Assistant</h1>
+            <p>Official Jharkhand GSCC Scheme Information Portal</p>
         </div>
     </div>
 
@@ -23,7 +23,7 @@
                 <span id="status-text">Connecting...</span>
             </div>
             <div class="vector-stats" id="vector-stats">
-                Vector DB: Initializing...
+                System: Check Status
             </div>
         </div>
         <div class="status-actions">
@@ -36,8 +36,8 @@
     <div class="chat-messages" id="chat-messages">
         <div class="loading" id="loading">
             <div class="loading-spinner"></div>
-            <p>Initializing RAG system...</p>
-            <p style="font-size: 12px; margin-top: 12px; opacity: 0.7;">Loading embeddings and vector database...</p>
+            <p>Connecting to GSCC Assistant...</p>
+            <p style="font-size: 12px; margin-top: 12px; opacity: 0.7;">Accessing scheme documentation and portal data...</p>
         </div>
     </div>
 
@@ -51,13 +51,13 @@
     </div>
 
     <div class="quick-questions">
-        <h4>Quick Questions</h4>
+        <h4>Common Questions</h4>
         <div class="question-pills">
-            <div class="question-pill" onclick="app.askQuestion('Tell me about NIT Jamshedpur?')">About NITJSR</div>
-            <div class="question-pill" onclick="app.askQuestion('How to reach NIT Jamshedpur?')">Location</div>
-            <div class="question-pill" onclick="app.askQuestion('Tell me about hostel facilities in NIT Jamshedpur?')">Hostel Facilities</div>
-            <div class="question-pill" onclick="app.askQuestion('What is the NIRF Ranking of NIT Jamshedpur?')">Ranking</div>
-            <div class="question-pill" onclick="app.askQuestion('Tell me about the wardens of NIT Jamshedpur?')">Warden</div>
+            <div class="question-pill" onclick="app.askQuestion('What is the Guruji Student Credit Card scheme?')">About GSCC</div>
+            <div class="question-pill" onclick="app.askQuestion('What is the maximum loan amount under GSCC?')">Loan Limit</div>
+            <div class="question-pill" onclick="app.askQuestion('What is the interest rate for the student credit card?')">Interest Rate</div>
+            <div class="question-pill" onclick="app.askQuestion('What are the eligibility criteria for the scheme?')">Eligibility</div>
+            <div class="question-pill" onclick="app.askQuestion('What documents are required for application?')">Documents</div>
         </div>
     </div>
 
@@ -424,18 +424,19 @@
     // Message Templates Module
     const Messages = {
         welcome() {
-            return `Welcome to the NIT Jamshedpur Placement Assistant.
+            return `Welcome to the Jharkhand Guruji Student Credit Card (GSCC) Assistant.
 
-This system is powered by advanced AI technologies including LangChain for intelligent processing, Pinecone vector database for semantic search, real-time web scraping for latest data, and PDF document analysis.
+I am an AI assistant trained on official government documentation to help students and parents understand the Student Credit Card scheme.
 
 I can help you with:
-• Placement statistics and percentages
-• Package information (highest, average, branch-wise)
-• Company details and recruitment patterns
-• Branch-specific placement data
-• Historical trends and analysis
+• Eligibility criteria for the credit card
+• Maximum loan limits and interest rates
+• List of approved banks and institutions
+• Mandatory document requirements
+• Application process and tracking
+• Repayment terms and moratorium periods
 
-Please ask me anything about NIT Jamshedpur placements.`;
+Please ask any questions regarding the GSCC Jharkhand scheme.`;
         },
 
         dataRefreshSuccess(summary, timestamp) {
@@ -528,17 +529,9 @@ These sources contain placement data including statistics, company information, 
                     UI.updateStatus('online', 'Connected');
                     UI.updateVectorStats(data.vectorDatabase);
 
-                    if (!data.initialized && !DISABLE_AUTO_INIT) {
-                        UI.updateStatus('initializing', 'Initializing RAG system...');
-                        const initData = await API.initialize();
-
-                        if (initData.success) {
-                            UI.updateStatus('online', 'Ready');
-                        } else {
-                            throw new Error(initData.error);
-                        }
-                    } else if (!data.initialized && DISABLE_AUTO_INIT) {
-                        UI.updateStatus('idle', 'Server not initialized');
+                    if (!data.initialized) {
+                        UI.updateStatus('idle', 'Assistant initializing...');
+                        // Removed auto-call to /initialize as per user request
                     }
 
                     State.setInitialized(true);

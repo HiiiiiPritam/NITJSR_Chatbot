@@ -10,12 +10,13 @@ import { SitemapLoader } from './sitemapLoader.js';
 import { XhrCapture } from './xhrCapture.js';
 import { PageExtractor } from './pageExtractor.js';
 import { LinkProcessor } from './linkProcessor.js';
+import { LocalPdfProcessor } from './localPdfProcessor.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 
-class NITJSRScraper {
+class JharkhandGovScraper {
     constructor(options = {}) {
         this.visited = new Set();
         this.toVisit = new Set();
@@ -24,7 +25,7 @@ class NITJSRScraper {
         this.maxPages = options.maxPages || 650;
         this.maxDepth = options.maxDepth || 3;
         this.delay = options.delay || 1500;
-        this.baseUrl = 'https://nitjsr.ac.in';
+        this.baseUrl = 'https://gscc.jharkhand.gov.in';
         this.priorityUrls = Array.isArray(options.priorityUrls) ? options.priorityUrls : [];
         this.priorityQueue = [];
         this.excludeUrls = new Set();
@@ -53,9 +54,9 @@ class NITJSRScraper {
         this.scrapedData = {
             metadata: {
                 timestamp: new Date().toISOString(),
-                source: 'NIT Jamshedpur Official Website',
+                source: 'Jharkhand Government GSCC Scheme',
                 baseUrl: this.baseUrl,
-                scrapeType: 'enhanced_comprehensive',
+                scrapeType: 'government_portal_comprehensive',
                 maxPages: this.maxPages,
                 maxDepth: this.maxDepth,
             },
@@ -91,6 +92,7 @@ class NITJSRScraper {
 
         // Sitemap loader will be initialized in scrapeComprehensive
         this.sitemapLoader = null;
+        this.localPdfProcessor = new LocalPdfProcessor();
     }
 
     async initialize() {
@@ -221,10 +223,37 @@ class NITJSRScraper {
         let latestResolvedKey = null;
 
         try {
+            console.log(`[debug] Navigating to ${url}...`);
             await this.browserManager.page.goto(url, {
-                waitUntil: 'networkidle0',
-                timeout: 45000,
+                waitUntil: 'load',
+                timeout: 60000,
+            }).catch(async (e) => {
+                console.warn(`[debug] Standard load failed for ${url}, trying domcontentloaded fallback: ${e.message}`);
+                await this.browserManager.page.goto(url, {
+                    waitUntil: 'domcontentloaded',
+                    timeout: 30000,
+                });
             });
+
+            console.log(`[debug] Page reached: ${this.browserManager.page.url()}`);
+            await this.browserManager.page.waitForTimeout(2000); // Give it a moment to stabilize
+
+            // Specific logic for Jharkhand GSCC: Click navigation to reveal hidden links
+            try {
+                const navSelectors = [
+                    '#Other_Scheme',
+                    '#Institution_and_Bank_list'
+                ];
+                for (const selector of navSelectors) {
+                    const exists = await this.browserManager.page.$(selector);
+                    if (exists) {
+                        await this.browserManager.page.click(selector);
+                        await this.browserManager.page.waitForTimeout(500);
+                    }
+                }
+            } catch (e) {
+                console.warn('Failed to click navigation elements:', e.message);
+            }
 
             await this.browserManager.page.waitForTimeout(this.delay);
 
@@ -233,8 +262,10 @@ class NITJSRScraper {
 
             let rawPageData = null;
             try {
+                console.log(`[debug] Extracting DOM for ${url}...`);
                 rawPageData = await this.pageExtractor.extractFullDom(this.browserManager.page);
-            } catch {
+            } catch (e) {
+                console.error(`[debug] DOM extraction failed for ${url}:`, e.message);
                 rawPageData = null;
             }
 
@@ -411,7 +442,7 @@ class NITJSRScraper {
                 }
             });
 
-            const startUrls = ['https://nitjsr.ac.in/'];
+            const startUrls = ['https://gscc.jharkhand.gov.in/'];
 
             // Add starting URLs to visit queue
             startUrls.forEach((url) => {
@@ -488,6 +519,13 @@ class NITJSRScraper {
 
             this.updateStatistics();
 
+            // NEW: Automatically process local PDFs in scraper/pdfs and merge them
+            console.log('[scrape] Merging local PDF documents...');
+            this.scrapedData = await this.localPdfProcessor.processAll(this.scrapedData);
+            
+            // Re-update statistics after merge
+            this.updateStatistics();
+
             const result = await this.saveData();
 
             return result;
@@ -529,7 +567,7 @@ class NITJSRScraper {
 
     async saveData() {
         const timestamp = new Date().toISOString().replace(/[:.]/g, '_');
-        const filename = `nitjsr_enhanced_comprehensive_${timestamp}.json`;
+        const filename = `jharkhand_gscc_${timestamp}.json`;
         const filepath = path.resolve(__dirname, '..', 'scraped_data', filename);
 
         // Ensure directory exists
@@ -580,4 +618,4 @@ class NITJSRScraper {
 
 }
 
-export { NITJSRScraper };
+export { JharkhandGovScraper };

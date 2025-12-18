@@ -7,7 +7,7 @@ export class BrowserManager {
     }
 
     async initialize() {
-        console.log('Initializing NIT JSR Website Scraper...');
+        console.log('Initializing Jharkhand Government Website Scraper...');
         if (!puppeteer) {
             console.warn(
                 'Puppeteer not available, scraper will work with limited functionality'
