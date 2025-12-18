@@ -1,0 +1,367 @@
+{
+  "curriculum": [
+    {
+      "id": 1,
+      "department": "First Years",
+      "programs": [
+        {
+          "title": "Curriculum & Syllabus for all First year B.Tech Programme",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/First_Year_Syllabus.pdf"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "department": "Civil Engineering",
+      "programs": [
+        {
+          "title": "Curriculum for B.Tech Programme",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/Final%20UG_BOS%20Civil%20_%202018.pdf"
+        },
+        {
+          "title": "Curriculum for M.Tech Programme in Structural Engineering",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/SE_MTech_Civil.pdf"
+        },
+        {
+          "title": "Curriculum for M.Tech Programme in Water Resources Engineering",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/WRE_MTech_Civil.pdf"
+        },
+        {
+          "title": "Curriculum for M.Tech Programme in Geo Technical Engineering",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/GE_MTech_Civil.pdf"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "department": "Computer Science and Engineering",
+      "programs": [
+        {
+          "title": "Curriculum for B.Tech Programme",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/CSE%20Curriculum%20and%20Syllabus.pdf"
+        },
+        {
+          "title": "Curriculum for M.Tech Programme in Computer Science & Engineering",
+          "link": "https://www.nitjsr.ac.in/academic/Curriculum"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "department": "Electronics and Communication Engineering",
+      "programs": [
+        {
+          "title": "Curriculum for B.Tech Programme",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/B.Tech_ECE_NITJsr_Curriculum%202018%20Batch%20onwards.pdf"
+        },
+        {
+          "title": "B. Tech 1st & 2nd sem syllabus 2018 Batch onwards",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/B.Tech_NIT_Jsr_1st_and_2nd_sem_syllabus%202018%20Batch%20onwards.pdf"
+        },
+        {
+          "title": "B. Tech ECE Syllabus 2018 Batch onwards",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/BTech_ECE_Syllabus%202018%20Batch%20onwards.pdf"
+        },
+        {
+          "title": "Curriculum for M. Tech Programme in Embedded Systems Engineering",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/M.Tech_ECE_Emb%20SyS_NITJsr_Curriculum%202019%20Batch%20onwards.pdf"
+        },
+        {
+          "title": "Curriculum for M. Tech Programme in Communication Systems Engineering",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/M.Tech_ECE_Com%20SyS_NITJsr_Curriculum%202019%20Batch%20onwards.pdf"
+        },
+        {
+          "title": "Syllabus for M. Tech Programme in Embedded Systems Engineering 2019 Batch onwards",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/MTech_ECE_Emb%20Sys_Syllabus%202019%20Batch%20onwards.pdf"
+        },
+        {
+          "title": "Syllabus for M. Tech Programme in Communication Systems Engineering 2019 Batch onwards",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/MTech_ECE_Com%20Sys_Syllabus%202019%20Batch%20onwards.pdf"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "department": "Electrical Engineering",
+      "programs": [
+        {
+          "title": "Curriculum for B.Tech Programme",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/MTech_ECE_Com%20Sys_Syllabus%202019%20Batch%20onwards.pdf"
+        },
+        {
+          "title": "Curriculum for M.Tech Programme in Power Systems Engineering",
+          "link": "https://www.nitjsr.ac.in/academic/Curriculum"
+        },
+        {
+          "title": "Curriculum for M.Tech Programme in Power Electronics and Drives",
+          "link": "https://www.nitjsr.ac.in/academic/Curriculum"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "department": "Production & Industrial Engineering",
+      "programs": [
+        {
+          "title": "Curriculum for B.Tech Programme",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/BOS%20for%20B.Tech%20(Hons.)%20in%20Prod.%20&%20Ind.%20Engg._new.pdf"
+        },
+        {
+          "title": "Curriculum for M.Tech Programme in Manufacturing Systems Engineering",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/BOS%20for%20B.Tech%20(Hons.)%20in%20Prod.%20&%20Ind.%20Engg._new.pdf"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "department": "Mechanical Engineering",
+      "programs": [
+        {
+          "title": "Curriculum for B.Tech Programme",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/MED_Revised_syllabus_26-8-19.pdf"
+        },
+        {
+          "title": "Course Structure and Syllabus for 2016 & 2017 Admission Batch of B.Tech",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/MED_Revised_syllabus_26-8-19%20New.pdf"
+        },
+        {
+          "title": "Curriculum for M.Tech Programme in Thermal Engineering",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/Syllabus%20_%20M.%20Tech(PG)%20Course%20of%20Thermal.pdf"
+        },
+        {
+          "title": "Curriculum for M.Tech Programme in Computer Integrated Design and Manufacturing",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/CIDM.pdf"
+        },
+        {
+          "title": "Curriculum for M.Tech Programme in Energy Systems Engineering",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/Syllabus_%20M.%20Tech(PG)%20Course%20of%20ESE%20.pdf"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "department": "Metallurgical and Materials Engineering",
+      "programs": [
+        {
+          "title": "Curriculum for B.Tech Programme",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/B.TechMME.pdf"
+        },
+        {
+          "title": "Curriculum for M.Tech Programme in Foundry Technology",
+          "link": "https://www.nitjsr.ac.in/academic/Curriculum"
+        },
+        {
+          "title": "Curriculum for M.Tech Programme in Industrial Metallurgy",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/MTech_MME_Industrial.pdf"
+        },
+        {
+          "title": "Curriculum for M.Tech Programme in Materials Technology",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/MTech_MME_MT.pdf"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "department": "Chemistry",
+      "programs": [
+        {
+          "title": "Curriculum for M.Tech Programme in Surface Science & Engineering",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/M.%20Tech%20Chemistry%20Surface%20and%20Science.pdf"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "department": "Computer Applications",
+      "programs": [
+        {
+          "title": "Curriculum for MCA Programme",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/MCA.pdf"
+        },
+        {
+          "title": "Curriculum for M.Tech Programme in Information Systems Security Engineering",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/M.techMCA.pdf"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "department": "M.Sc Programme",
+      "programs": [
+        {
+          "title": "Curriculum for M.Sc in Chemistry",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/M.%20Sc%20Chemistry%20Syllabus%20Final%202018.pdf"
+        },
+        {
+          "title": "Curriculum for M.Sc in Mathematics",
+          "link": "https://www.nitjsr.ac.in/backend/uploads/curriculum/M.%20Sc%20Chemistry%20Syllabus%20Final%202018.pdf"
+        },
+        {
+          "title": "Curriculum for M.Sc in Physics",
+          "link": "https://www.nitjsr.ac.in/academic/Curriculum"
+        }
+      ]
+    }
+  ],
+
+  "webTeam": {
+    "current": [
+      { "name": "Unnati Chaurasia", "post": "Full Stack Developer", "batch": "ECE 2K22" },
+      { "name": "Somesh Dwivedi", "post": "Full Stack Developer", "batch": "CSE 2K22" },
+      { "name": "Aayush Kumar", "post": "Full Stack Developer", "batch": "CSE 2K22" },
+      { "name": "Himanshu Kumar Pathak", "post": "Full Stack Developer", "batch": "CSE 2K22" },
+      { "name": "Sumani Kumari", "post": "Full Stack Developer", "batch": "PIE 2K22" },
+      { "name": "Harshit Shrivastav", "post": "Full Stack Developer", "batch": "CSE 2K22" },
+      { "name": "Priya Kumari", "post": "Full Stack Developer", "batch": "CE 2K22" },
+      { "name": "Tarun Kumar", "post": "Full Stack Developer", "batch": "CSE 2K22" },
+      { "name": "Mayank Raj", "post": "Full Stack Developer", "batch": "CSE 2K22" },
+      { "name": "Sonu Hansda", "post": "Full Stack Developer", "batch": "ECM 2K23" },
+      { "name": "Chandrima Hazra", "post": "Full Stack Developer", "batch": "CSE 2K23" },
+      { "name": "Om Raj", "post": "Full Stack Developer", "batch": "CSE 2K23" },
+      { "name": "Devdutt Sahoo", "post": "Full Stack Developer", "batch": "CSE 2K23" },
+      { "name": "Pritam Roy", "post": "Full Stack Developer", "batch": "CSE 2K23" },
+      { "name": "Abhishek Jawanpuria", "post": "Full Stack Developer", "batch": "ECE 2K23" },
+      { "name": "Ayush Sahu", "post": "Full Stack Developer", "batch": "EE 2K23" },
+      { "name": "Shivapretham H S", "post": "Full Stack Developer", "batch": "CSE 2K23" },
+      { "name": "Hemanvitha Pullela", "post": "Full Stack Developer", "batch": "CSE 2K23" },
+      { "name": "C Abhinav Dev", "post": "Full Stack Developer", "batch": "CSE 2K23" },
+      { "name": "Keshav Trivedi", "post": "Full Stack Developer", "batch": "CSE 2K23" },
+      { "name": "Peehal Sinha", "post": "UI/UX", "batch": "ECM 2K23" },
+      { "name": "Gargi Pandit", "post": "UI/UX", "batch": "CSE 2K23" },
+      { "name": "Avani Gupta", "post": "UI/UX", "batch": "CSE 2K23" }
+    ],
+
+    "previous": [
+      { "name": "Harsh Raj", "batch": "CSE(2021)" },
+      { "name": "Arvindh Iyer", "batch": "CSE(2021)" },
+      { "name": "Shubham Kumar Singh", "batch": "PIE(2021)" },
+      { "name": "Mohit Kumar Agrawal", "batch": "CSE(2021)" },
+      { "name": "Adatra Gautam Kiran", "batch": "CSE(2021)" },
+      { "name": "Shivansh Kumar Dubey", "batch": "CSE(2021)" },
+      { "name": "Mayur Kumar", "batch": "CSE(2021)" },
+      { "name": "Shubham Tiwary", "batch": "ME(2020)" },
+      { "name": "Suvrodeep Halder", "batch": "CSE(2020)" }
+    ]
+  },
+
+  "tapContacts": {
+    "pi": [
+      {
+        "name": "Prof. S. K. Sarangi",
+        "role": "Professor In-Charge, Training and Placement Cell",
+        "mobile": "+91-7008350274",
+        "email": "pi.tap@nitjsr.ac.in"
+      }
+    ],
+
+    "Faculty Coordinators": [
+      {
+        "name": "Dr. Chandradeep Singh",
+        "branch": "Electronics and Communication Engineering",
+        "mobile": "+91 8218693645",
+        "email": "chandradeep.ece@nitjsr.ac.in"
+      },
+      {
+        "name": "Dr. Vineet Sahoo",
+        "branch": "Engineering and Computational Mechanics",
+        "mobile": "+91 8348502799",
+        "email": "vsahoo.me@nitjsr.ac.in"
+      },
+      {
+        "name": "Dr. Sanjay Kumar",
+        "branch": "Electrical Engineering",
+        "mobile": "+91 8210856342",
+        "email": "skumar.ee@nitjsr.ac.in"
+      },
+      {
+        "name": "Dr. B. R. Reddy",
+        "branch": "Computer Science Engineering & DCA",
+        "mobile": "+91 9479639634",
+        "email": "brcreddy.cse@nitjsr.ac.in"
+      },
+      {
+        "name": "Dr. R. K. Gouda",
+        "branch": "Mechanical Engineering",
+        "mobile": "+91 8895642312",
+        "email": "rinkugouda.me@nitjsr.ac.in"
+      },
+      {
+        "name": "Dr. Monalisa Mandal",
+        "branch": "Metallurgical and Materials Engineering",
+        "mobile": "+91 9832085835",
+        "email": "monalisa.met@nitjsr.ac.in"
+      },
+      {
+        "name": "Dr. Dinesh Kumar",
+        "branch": "Production and Industrial Engineering",
+        "mobile": "+91 9084932611",
+        "email": "dinesh.prod@nitjsr.ac.in"
+      },
+      {
+        "name": "Dr. Awdhesh Kumar Choudhary",
+        "branch": "Civil Engineering",
+        "mobile": "+91 8436240573",
+        "email": "awdesh.ce@nitjsr.ac.in"
+      },
+      {
+        "name": "Dr. Naveen Kr. Velurthi",
+        "branch": "Department of Chemistry & M.Tech (Surface Science and Engineering)",
+        "mobile": "+91 9985457678",
+        "email": "naveen.chem@nitjsr.ac.in"
+      },
+      {
+        "name": "Dr. Rajat Tripathi",
+        "branch": "Department of Mathematics",
+        "mobile": "+91 7909067450",
+        "email": "rtripathi.math@nitjsr.ac.in"
+      },
+      {
+        "name": "Dr. Uday Kumar",
+        "branch": "Department of Physics",
+        "mobile": "+91 8969148580",
+        "email": "uday.phy@nitjsr.ac.in"
+      }
+    ],
+
+    "TAP Coordinators - UG": [
+      { "name": "Chandan Pandey", "mobile": "+91 6205330891", "branch": "Civil Engineering" },
+      { "name": "Aditya Kumar", "mobile": "+91 9931694443", "branch": "Civil Engineering" },
+      { "name": "Mitul Patel", "mobile": "+91 6353936121", "branch": "Computer Science Engineering" },
+      { "name": "Arin Choudhary", "mobile": "+91 8949004861", "branch": "Computer Science Engineering" },
+      { "name": "Adarsh Kumar", "mobile": "+91 7482903083", "branch": "Electronics and Communication Engineering" },
+      { "name": "Kumar Saurabh", "mobile": "+91 9279009705", "branch": "Electronics and Communication Engineering" },
+      { "name": "Gangadhar", "mobile": "+91 8677981857", "branch": "Electrical Engineering" },
+      { "name": "Naman Parashar", "mobile": "+91 7223986729", "branch": "Electrical Engineering" },
+      { "name": "Niraj Kumar", "mobile": "+91 7667619079", "branch": "Engineering & Computational Mechanics" },
+      { "name": "Nandita Thakur", "mobile": "+91 7667619079", "branch": "Engineering & Computational Mechanics" },
+      { "name": "Manas Dubey", "mobile": "+91 8953685957", "branch": "Mechanical Engineering" },
+      { "name": "Yuvraj Singh", "mobile": "+91 8018877293", "branch": "Mechanical Engineering" },
+      { "name": "Rohit Parashar", "mobile": "+91 7488068474", "branch": "Metallurgical & Materials Engineering" },
+      { "name": "Monu Kumar Yadav", "mobile": "+91 9334027299", "branch": "Metallurgical & Materials Engineering" },
+      { "name": "Utkarsh Shukla", "mobile": "+91 8960961955", "branch": "Production & Industrial Engineering" },
+      { "name": "Pranjal Mishra", "mobile": "+91 8858641124", "branch": "Production & Industrial Engineering" }
+    ],
+
+    "TAP Coordinators - PG": [
+      { "name": "Yash Jaiswal", "mobile": "+91 6261306890", "branch": "M.Tech CSE/DSE" },
+      { "name": "Vanisha Samriddhi", "mobile": "+91 7250117629", "branch": "M.Tech CSE/ISSE" },
+      { "name": "Priya Tiwari", "mobile": "+91 9136527559", "branch": "MCA" },
+      { "name": "Shwetabh Sinha", "mobile": "+91 6388229503", "branch": "MCA" },
+      { "name": "Shubham Mundhra", "mobile": "+91 8700104865", "branch": "MCA" },
+      { "name": "Anjali Kumari", "mobile": "+91 9471828727", "branch": "ECE (Communication System Engineering)" },
+      { "name": "Sonali Sanghamitra Sahoo", "mobile": "+91 7008245874", "branch": "ECE (VLSI & Embedded Systems)" },
+      { "name": "Satendra Dhangar", "mobile": "+91 9548799906", "branch": "M.Tech Power Electronics and Drives" },
+      { "name": "Ataul Haque", "mobile": "+91 9036153816", "branch": "M.Tech Mechanical Engineering" },
+
+      { "name": "Rohan Vatsa", "mobile": "+91 9123122089", "branch": "Production & Industrial Engineering (Operations & Supply Chain)" },
+      { "name": "Arvind Kumar", "mobile": "+91 8873221100", "branch": "Production & Industrial Engineering (Smart Manufacturing)" },
+      { "name": "Abhimanyu Prakash Sharma", "mobile": "+91 9534145243", "branch": "M.Tech Civil Engineering" },
+      { "name": "Md Kaif", "mobile": "+91 8651201605", "branch": "M.Tech CSE" },
+      { "name": "Pritha Saha", "mobile": "+91 7364008677", "branch": "M.Sc Mathematics" },
+      { "name": "Siddu A Marihal", "mobile": "+91 7892307077", "branch": "M.Sc Physics" },
+      { "name": "Jahir Hussain Ahmed", "mobile": "+91 8967734880", "branch": "Power System Engineering" },
+      { "name": "Harshit Mudgal", "mobile": "+91 9462461501", "branch": "M.Sc Chemistry" },
+      { "name": "Debashree Ganguly", "mobile": "+91 9434577942", "branch": "M.Sc Chemistry" }
+    ]
+  }
+}

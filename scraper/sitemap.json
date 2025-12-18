@@ -1,0 +1,449 @@
+[
+  {
+    "section": "Home"
+  },
+  {
+    "section": "Institute",
+    "sublinks": [
+      {
+        "name": "About NITJSR",
+        "link": "/Institute/About_NITJSR"
+      },
+      {
+        "name": "Vision and Mission",
+        "link": "/Institute/Vision_and_Mission"
+      },
+      {
+        "name": "Acts and Statues",
+        "link": "/Institute/Acts_and_Statues"
+      },
+      {
+        "name": "Board of Governers",
+        "link": "/Institute/Board_of_Governers"
+      },
+      {
+        "name": "Finance Committee",
+        "link": "/Institute/Finance_Committee"
+      },
+      {
+        "name": "Buildings and Works Committee",
+        "link": "/Institute/Buildings_and_Works_Committee"
+      },
+      {
+        "name": "Senate",
+        "link": "/Institute/Senate"
+      },
+      {
+        "name": "Ranking and Recognition",
+        "link": "/Institute/Ranking_and_Recognition"
+      },
+      {
+        "name": "Former Directors",
+        "link": "/Institute/Former_Directors"
+      }
+    ]
+  },
+  {
+    "section": "Academics",
+    "sublinks": [
+      {
+        "name": "Academics",
+        "link": "/academic/Academics"
+      },
+      {
+        "name": "Admissions",
+        "link": "/academic/Admission",
+        "sublinks": [
+          {
+            "name": "B.Tech",
+            "link": "/Academic/BTechAdmission"
+          },
+          {
+            "name": "M.Tech",
+            "link": "http://ccmt.nic.in/"
+          },
+          {
+            "name": "M.Sc",
+            "link": "http://www.ccmn.in/"
+          },
+          {
+            "name": "MCA",
+            "link": "https://www.nimcet.in/"
+          },
+          {
+            "name": "PhD",
+            "link": "https://nitjsrv2.netlify.app/"
+          }
+        ]
+      },
+      {
+        "name": "People",
+        "link": "/academic/People"
+      },
+      {
+        "name": "Departments",
+        "link": "/academic/Departments",
+        "sublinks": [
+          {
+            "name": "Civil Engineering",
+            "link": "/departments/civil"
+          },
+          {
+            "name": "Chemistry",
+            "link": "/departments/chem"
+          },
+          {
+            "name": "Computer Application",
+            "link": "/departments/mca"
+          },
+          {
+            "name": "Computer Science and Engineering",
+            "link": "/departments/cs"
+          },
+          {
+            "name": "Electronics and Communication Engineering",
+            "link": "/departments/ece"
+          },
+          {
+            "name": "Electrical Engineering",
+            "link": "/departments/eee"
+          },
+          {
+            "name": "Humanities, Social Sciences and Management",
+            "link": "/departments/humanities"
+          },
+          {
+            "name": "Mathematics",
+            "link": "/departments/maths"
+          },
+          {
+            "name": "Mechanical Engineering",
+            "link": "/departments/mech"
+          },
+          {
+            "name": "Metallurgical and Materials Engineering",
+            "link": "/departments/meta"
+          },
+          {
+            "name": "Physics",
+            "link": "/departments/phys"
+          },
+          {
+            "name": "Production and Industrial Engineering",
+            "link": "/departments/prod"
+          }
+        ]
+      },
+      {
+        "name": "Curriculum",
+        "link": "/academic/Curriculum"
+      },
+      {
+        "name": "Student Statistics",
+        "link": "/academic/Student_Statistics"
+      },
+      {
+        "name": "Fee Structure",
+        "link": "/academic/Fee_Structure"
+      },
+      {
+        "name": "Semester Schedule",
+        "link": "/academic/Semester_Schedule"
+      },
+      {
+        "name": "Ordinance",
+        "link": "/academic/Ordinance"
+      },
+      {
+        "name": "Academic Documents",
+        "link": "/academic/Academic_Documents"
+      }
+    ]
+  },
+  {
+    "section": "Students",
+    "sublinks": [
+      {
+        "name": "Placements",
+        "link": "/Students/Placements",
+        "sublinks": [
+          {
+            "name": "Training and Placement Cell",
+            "link": "#"
+          }
+        ]
+      },
+      {
+        "name": "News and Achievements",
+        "link": "/Students/News-and-Achievements"
+      },
+      {
+        "name": "Student Activities",
+        "link": "/Students/Student-Activities"
+      },
+      {
+        "name": "Financial Assistance",
+        "link": "/Students/Financial-Assistance"
+      },
+      {
+        "name": "Hostel Management",
+        "link": "/Students/Hostel-Management"
+      },
+      {
+        "name": "Anti Ragging",
+        "link": "/Students/Anti-Ragging"
+      },
+      {
+        "name": "Student Life",
+        "link": "/Students/Student-Life"
+      },
+      {
+        "name": "Health and Welfare",
+        "link": "/Students/Health-and-Welfare"
+      },
+      {
+        "name": "Life @NIT JSR",
+        "link": "/Students/Life-@NIT-JSR"
+      }
+    ]
+  },
+  {
+    "section": "People",
+    "sublinks": [
+      {
+        "name": "People Home",
+        "link": "/People/People_Home"
+      },
+      {
+        "name": "Director",
+        "link": "/People/Director"
+      },
+      {
+        "name": "Deans",
+        "link": "/People/Deans"
+      },
+      {
+        "name": "Registrar",
+        "link": "/People/Registrar"
+      },
+      {
+        "name": "Associate Deans",
+        "link": "/People/Associate_Dean"
+      },
+      {
+        "name": "Head of Departments",
+        "link": "/People/Head_of_Departments"
+      },
+      {
+        "name": "Faculty In-Charge",
+        "link": "/People/Faculty_InCharge"
+      },
+      {
+        "name": "Faculty",
+        "link": "/People/Faculty"
+      },
+      {
+        "name": "Wardens",
+        "link": "/People/Wardens"
+      },
+      {
+        "name": "Staff",
+        "link": "/People/Staff"
+      }
+    ]
+  },
+  {
+    "section": "Recruitment",
+    "sublinks": [
+      {
+        "name": "Recruitment",
+        "link": "/Recruitments"
+      }
+    ]
+  },
+  {
+    "section": "Tenders",
+    "sublinks": [
+      {
+        "name": "Active Tenders",
+        "link": "/Tender/Active_Tenders"
+      },
+      {
+        "name": "Archived Tenders",
+        "link": "/Tender/Archived_Tenders"
+      },
+      {
+        "name": "All Tenders",
+        "link": "/Tender/All_Tenders"
+      },
+      {
+        "name": "Contact Us",
+        "link": "/Tender/Contact_Us"
+      },
+      {
+        "name": "Useful Links",
+        "link": "/Tender/Useful_Links"
+      }
+    ]
+  },
+  {
+    "section": "Notices",
+    "sublinks": [
+      {
+        "name": "Announcements",
+        "link": "/Notices/Announcements"
+      },
+      {
+        "name": "Office Orders",
+        "link": "/Notices/Office_Orders"
+      },
+      {
+        "name": "Recruitments",
+        "link": "/Recruitments"
+      },
+      {
+        "name": "Archive Notices",
+        "link": "/Notices/Archive_Notices"
+      }
+    ]
+  },
+  {
+    "section": "Research and Development",
+    "sublinks": [
+      {
+        "name": "Research and Development",
+        "link": "/RnD"
+      }
+    ]
+  },
+  {
+    "section": "Cells",
+    "sublinks": [
+      {
+        "name": "SC-ST Cell",
+        "link": "/Cell/SC-ST_Cell"
+      },
+      {
+        "name": "IPR Cell",
+        "link": "/Cell/IPR_Cell"
+      },
+      {
+        "name": "Grievance Cell",
+        "link": "/Cell/Grievance_Cell"
+      },
+      {
+        "name": "Reservation Cell",
+        "link": "/Cell/Reservation_Cell"
+      },
+      {
+        "name": "Publication Cell",
+        "link": "/Cell/Publication_Cell"
+      },
+      {
+        "name": "Public Relation Cell",
+        "link": "/Cell/Public_Relation_Cell"
+      },
+      {
+        "name": "Hindi Cell",
+        "link": "/Cell/Hindi_Cell"
+      },
+      {
+        "name": "Women Cell",
+        "link": "/Cell/Women_Cell"
+      }
+    ]
+  },
+  {
+    "section": "Central Facilities",
+    "sublinks": [
+      {
+        "name": "Central Library",
+        "link": "/facilities/Central_Library"
+      },
+      {
+        "name": "Medical Facilities",
+        "link": "/facilities/Medical_Facilities"
+      },
+      {
+        "name": "Computer Center",
+        "link": "/facilities/Computer_Center"
+      },
+      {
+        "name": "Safety and Security",
+        "link": "/facilities/Safety_and_Security"
+      },
+      {
+        "name": "Hostels",
+        "link": "/facilities/Hostels"
+      },
+      {
+        "name": "Guest House",
+        "link": "/facilities/Guest_House"
+      },
+      {
+        "name": "Student Counselling",
+        "link": "/facilities/Student_Counselling"
+      },
+      {
+        "name": "Transport",
+        "link": "/facilities/Transport"
+      }
+    ]
+  },
+  {
+    "section": "Internal Links",
+    "sublinks": [
+      {
+        "name": "Internal Links",
+        "link": "/internalLinks"
+      }
+    ]
+  },
+  {
+    "section": "Convocation",
+    "sublinks": [
+      {
+        "name": "Convocation",
+        "link": "/convocation"
+      }
+    ]
+  },
+  {
+    "section": "Quick Links",
+    "sublinks": [
+      {
+        "name": "Legal Cases",
+        "link": "/Legal-cases"
+      },
+      {
+        "name": "Right To Information",
+        "link": "/RTI"
+      },
+      {
+        "name": "How to Reach",
+        "link": "/Institute/How_to_Reach"
+      },
+      {
+        "name": "PAN & GST Details",
+        "link": "/PAN&GST"
+      },
+      {
+        "name": "Photo Gallery",
+        "link": "/"
+      },
+      {
+        "name": "Downloads",
+        "link": "/Downloads"
+      }
+    ]
+  },
+  {
+    "section": "Web Team",
+    "sublinks": [
+      {
+        "name": "Web Team",
+        "link": "/Clubs/Webteam"
+      }
+    ]
+  }
+]

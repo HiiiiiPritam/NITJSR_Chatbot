@@ -206,7 +206,7 @@ class NITJSRScraper {
         }
 
         console.log(
-            `🔍 Scraping [${depth}/${this.maxDepth}] (${this.visited.size}/${this.maxPages}): ${url}`
+            `Scraping [${depth}/${this.maxDepth}] (${this.visited.size}/${this.maxPages}): ${url}`
         );
         this.visited.add(visitKey);
 
@@ -342,7 +342,7 @@ class NITJSRScraper {
       `);
 
             console.log(
-                `✅ Scraped: ${pageData.title} (${allContent.split(' ').length} words, ${
+                `Scraped: ${pageData.title} (${allContent.split(' ').length} words, ${
                     pageData.links.length
                 } links)`
             );
@@ -434,6 +434,8 @@ class NITJSRScraper {
                 this.pdfPolicy,
                 this.categorizer
             );
+
+
             await this.sitemapLoader.loadSitemapUrls(
                 this.visited,
                 this.toVisit,
@@ -481,7 +483,7 @@ class NITJSRScraper {
 
                 if (this.visited.size % 20 === 0) {
                     console.log(
-                        `📊 Progress: ${this.visited.size}/${this.maxPages} pages scraped, ${this.pdfUrls.size} PDFs found`
+                        `Progress: ${this.visited.size}/${this.maxPages} pages scraped, ${this.pdfUrls.size} PDFs found`
                     );
                 }
             }

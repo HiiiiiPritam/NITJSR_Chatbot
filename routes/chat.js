@@ -6,6 +6,8 @@ import { getMessage, languageManager } from '../utils/language.js'
  * Ensures consistency between chat route and responseCache logic.
  */
 function extractChatResponseFields(finalResponse) {
+    console.log(`===================== RESPONSE ===================== `);
+    console.log(finalResponse);
     const answerText = typeof finalResponse?.answer === 'string' ? finalResponse.answer.trim() : '';
     const sources = Array.isArray(finalResponse?.sources) ? finalResponse.sources : [];
     const relevantLinks = Array.isArray(finalResponse?.relevantLinks) ? finalResponse.relevantLinks : [];

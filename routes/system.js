@@ -41,6 +41,7 @@ export function setupSystemRoutes(app, server) {
             await server.ragSystem.initialize();
 
             const latestBundle = await server.loadLatestScrapedData();
+            console.log(latestBundle.data);
             if (!latestBundle?.data) {
                 return res
                     .status(404)

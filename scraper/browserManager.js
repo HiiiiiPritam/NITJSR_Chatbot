@@ -57,7 +57,7 @@ export class BrowserManager {
     async cleanup() {
         if (this.browser) {
             await this.browser.close();
-            console.log('🧹 Browser cleanup completed');
+            console.log('Browser cleanup completed');
         }
     }
 

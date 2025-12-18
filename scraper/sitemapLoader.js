@@ -111,7 +111,7 @@ export class SitemapLoader {
         }
 
         console.log(
-            `🧭 Sitemap: discovered ${discovered.size} URLs, enqueued ${enqueued} HTML pages, skipped direct PDF downloads`
+            `Sitemap: discovered ${discovered.size} URLs, enqueued ${enqueued} HTML pages, skipped direct PDF downloads`
         );
     }
 
