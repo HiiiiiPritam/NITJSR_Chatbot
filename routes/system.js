@@ -5,7 +5,7 @@ export function setupSystemRoutes(app, server) {
     // Initialize system endpoint
     app.post('/initialize', async (req, res) => {
         try {
-            console.log('Starting Gemini RAG system initialization...');
+            console.log('Starting Cohere RAG system initialization...');
 
             // Validate environment variables
             server.validateEnvironment();
@@ -14,9 +14,9 @@ export function setupSystemRoutes(app, server) {
 
             res.json({
                 success: true,
-                message: 'Gemini RAG system initialized successfully',
+                message: 'Cohere RAG system initialized successfully',
                 timestamp: new Date().toISOString(),
-                aiProvider: 'Google Gemini',
+                aiProvider: 'Cohere',
                 pineconeIndex: process.env.PINECONE_INDEX_NAME?.trim(),
             });
         } catch (error) {

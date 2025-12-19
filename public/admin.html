@@ -295,7 +295,7 @@
 
     const endpoints = [
         {id:'health',method:'GET',path:'/health',title:'Health Check',description:'Quick status probe for API and vector database status.'},
-        {id:'initialize',method:'POST',path:'/initialize',title:'Initialize RAG System',description:'Validate config & prime embeddings (Gemini + Cohere + Pinecone).',sampleBody:{}},
+        {id:'initialize',method:'POST',path:'/initialize',title:'Initialize RAG System',description:'Validate config & prime embeddings (Cohere + Pinecone).',sampleBody:{}},
         {id:'embed-latest',method:'POST',path:'/embed-latest',title:'Embed Latest Dataset',description:'Load newest scrape JSON + local PDFs into Pinecone + Mongo.',sampleBody:{}},
         {id:'scrape',method:'POST',path:'/scrape',title:'Scrape (Process Only)',description:'Crawls GSCC portal & merges local PDFs. Saves to JSON.',sampleBody:{force:false,maxPages:20,maxDepth:3,priorityUrls:['https://gscc.jharkhand.gov.in/Home/ContactUs'],restrictedUrls:[]}},
         {id:'scrape-and-embed',method:'POST',path:'/scrape-and-embed',title:'Scrape + Embed',description:'Full pipeline: crawl, merge local PDFs & push to vector DB.',sampleBody:{force:false,maxPages:20,maxDepth:3}},
