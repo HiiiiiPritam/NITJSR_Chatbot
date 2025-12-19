@@ -10,7 +10,7 @@ AI assistant that answers questions about NIT Jamshedpur using Retrieval‑Augme
 - Scrape the site with Puppeteer, collect rich page content and PDF links, and persist snapshots in json format under `scraped_data/`.
 - Chunk and embed with Cohere; store semantic vectors in Pinecone.
 - Maintain a change ledger in MongoDB (per URL content hash) to avoid duplicate work and to safely delete stale vectors.
-- Serve chat with Google Gemini.
+- Serve chat with Cohere.
 - Cache heavy work: embedding cache and a semantic response cache using LSH (Redis‑backed or in‑memory fallback).
 - Enforce rate limits per session/IP + menory fallback using Redis.
 
@@ -20,7 +20,7 @@ AI assistant that answers questions about NIT Jamshedpur using Retrieval‑Augme
 - Scraper: Puppeteer + Axios with sitemap awareness, categorized page discovery, dynamic JSON/XHR parsing and PDF link extraction.
 - Embeddings: Cohere v3 (`1024`‑dim) via LangChain.
 - Vector Store: Pinecone (cosine similarity, dimension 1024).
-- Generation: Google Gemini (`gemini‑2.5‑flash`) with structured prompt and context window from vector search.
+- Generation: Cohere (`command-r-plus`) with structured prompt and context window from vector search.
 - Change Ledger: MongoDB collections `pages` and `chunks` track content hashes, chunk IDs, and versions.
 - Caches:
   - Embedding cache (`caching/embeddingCache.js`) — Redis or in‑memory LRU
@@ -32,8 +32,7 @@ AI assistant that answers questions about NIT Jamshedpur using Retrieval‑Augme
 ## Tech Stack
 
 - Node.js, Express
-- Google Generative AI (Gemini)
-- Cohere Embeddings via LangChain
+- Cohere AI (Chat & Embeddings)
 - Pinecone Vector Database
 - MongoDB (change ledger)
 - Redis for caching and rate limiting
@@ -70,7 +69,7 @@ AI assistant that answers questions about NIT Jamshedpur using Retrieval‑Augme
 
 **3) Query & Generation**
   - For each user question, top‑K chunks are retrieved from Pinecone.
-  - A structured prompt is sent to Gemini; response is streamed via SSE.
+  - A structured prompt is sent to Cohere; response is streamed via SSE.
   - Response cache can short‑circuit if a highly similar question was answered recently.
 
 
@@ -84,8 +83,7 @@ AI assistant that answers questions about NIT Jamshedpur using Retrieval‑Augme
 - **Node.js 18+** (the stack uses ES Modules and Puppeteer's bundled Chromium build).
 - **npm** (installs dependencies and runs scripts).
 - Accounts and API keys for:
-  - Google Gemini (`GEMINI_API_KEY`)
-  - Cohere embeddings (`COHERE_API_KEY`)
+  - Cohere AI (`COHERE_API_KEY`)
   - Pinecone vector database (`PINECONE_API_KEY`, index name, environment)
 - **MongoDB** connection string (Atlas or self-hosted) if you want incremental ingestion and change tracking. Without it, the pipeline falls back to a legacy upsert path.
 - **Redis** (local or remote) if you want persistent caches. A local instance is enough for development; see `./docker-compose.yml`.
@@ -101,8 +99,8 @@ AI assistant that answers questions about NIT Jamshedpur using Retrieval‑Augme
 2. **Create `.env`** (never commit real keys). At minimum:
    ```env
    # AI providers
-   GEMINI_API_KEY=your_gemini_key
    COHERE_API_KEY=your_cohere_key
+   COHERE_CHAT_MODEL=command-r-plus        # optional override
    COHERE_EMBED_MODEL=embed-english-v3.0   # optional override
 
    # Pinecone
@@ -118,7 +116,7 @@ AI assistant that answers questions about NIT Jamshedpur using Retrieval‑Augme
    # mongo & redis
    REDIS_URL=redis://localhost:6379/0
    MONGODB_URI=...
-   MONGODB_DB=nitjsr_rag
+   MONGODB_DB=jharkhand_gscc_rag
    MONGO_PAGES_COLL=pages
    MONGO_CHUNKS_COLL=chunks
 
@@ -240,7 +238,7 @@ curl -X POST http://localhost:3001/embed-latest \
 - `GET /reindex/preview` -> dry-run of the ledger ingestion that reports adds, updates, and deletes without touching Pinecone.
 - `GET /sources` -> list of saved scrape bundles with counts and categories.
 - `GET /links` -> flattened view of the link database (PDFs, internal pages) once the system is initialized.
-- `GET /test-gemini` / `GET /test-pinecone` -> connectivity probes for external services.
+- `GET /test-cohere` / `GET /test-pinecone` -> connectivity probes for external services.
 
 
 ## npm scripts and utilities

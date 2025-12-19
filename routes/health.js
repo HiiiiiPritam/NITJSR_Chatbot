@@ -21,7 +21,7 @@ export function setupHealthRoutes(app, server) {
                     lastError: server.dbManager.mongo.lastError,
                 },
                 environment: process.env.NODE_ENV || 'development',
-                aiProvider: 'Google Gemini',
+                aiProvider: 'Cohere',
                 pineconeIndex: process.env.PINECONE_INDEX_NAME?.trim() || 'Not configured',
             });
         } catch (error) {
@@ -31,32 +31,34 @@ export function setupHealthRoutes(app, server) {
 
 
 
-    // Test Gemini connection
-    app.get('/test-gemini', authenticateAdmin, async (req, res) => {
+    // Test Cohere connection
+    app.get('/test-cohere', authenticateAdmin, async (req, res) => {
         try {
-            const { GoogleGenerativeAI } = await import('@google/generative-ai');
-            const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+            const { CohereClient } = await import('cohere-ai');
+            const cohere = new CohereClient({
+                token: process.env.COHERE_API_KEY,
+            });
 
-            // const models = await genAI.ListModels();
-            // console.log(models);
-
-            const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
-            const result = await model.generateContent(
-                'Say hello and confirm you are working correctly.'
-            );
-            const response = result.response.text();
+            const response = await cohere.v2.chat({
+                messages: [
+                    {
+                        role: "user",
+                        content: 'Say hello and confirm you are working correctly.',
+                    },
+                ],
+                model: process.env.COHERE_CHAT_MODEL || 'command-r-plus'
+            });
 
             res.json({
                 success: true,
-                message: 'Gemini connection successful',
-                response: response,
+                message: 'Cohere connection successful',
+                response: response.message.content[0].text,
                 timestamp: new Date().toISOString(),
             });
         } catch (error) {
             res
                 .status(500)
-                .json({ success: false, error: 'Gemini connection failed: ' + error.message });
+                .json({ success: false, error: 'Cohere connection failed: ' + error.message });
         }
     });
 

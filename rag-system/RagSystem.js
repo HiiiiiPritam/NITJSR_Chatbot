@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { CohereClient } from "cohere-ai";
 import { Pinecone } from "@pinecone-database/pinecone";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { CohereEmbeddings } from "@langchain/cohere";
@@ -24,11 +24,11 @@ function getLanguageInstruction(language) {
 class JharkhandGovRAGSystem {
     constructor(options = {}) {
         const { mongo = null } = options || {};
-        this.genAI = null;
+        this.cohere = null;
         this.pinecone = null;
         this.index = null;
         this.embeddings = null;
-        this.chatModel = null;
+        this.chatModelName = process.env.COHERE_CHAT_MODEL || "command-r-plus";
         this.textSplitter = null;
         this.isInitialized = false;
         this.linkDatabase = new Map(); // Store links for easy retrieval
@@ -63,13 +63,12 @@ class JharkhandGovRAGSystem {
     async initialize() {
         if (this.isInitialized) return;
 
-        console.log("Initializing Gemini(chat) + Cohere(emb) + Pinecone...");
+        console.log("Initializing Cohere(chat) + Cohere(emb) + Pinecone...");
 
         try {
-            // Initialize Google Gemini
-            this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            this.chatModel = this.genAI.getGenerativeModel({
-                model: "gemini-2.0-flash",
+            // Initialize Cohere Client
+            this.cohere = new CohereClient({
+                token: process.env.COHERE_API_KEY,
             });
 
             // Initialize Pinecone
@@ -112,7 +111,7 @@ class JharkhandGovRAGSystem {
 
             await this.ensureMongoIndexes();
             this.isInitialized = true;
-            console.log("✅ Gemini RAG System initialized successfully!");
+            console.log("✅ Cohere RAG System initialized successfully!");
         } catch (error) {
             console.error("❌ RAG System initialization failed:", error.message);
             throw error;
@@ -753,11 +752,16 @@ class JharkhandGovRAGSystem {
         }
 
         const seenUrls = new Set();
+
+        //TODO: This is local pdf url in my computer, may need change during deployment
+        seenUrls.add("local://guruji_guidelines.pdf");
+        seenUrls.add("local://676_2_2024.pdf");
+
         const deduplicated = [];
 
         for (const source of relevantSources) {
             const url = source.url || '';
-            if (!url || !seenUrls.has(url)) {
+            if (!url || !seenUrls.has(url) ) {
                 if (url) seenUrls.add(url);
                 deduplicated.push(source);
             } else {
@@ -899,13 +903,23 @@ class JharkhandGovRAGSystem {
               `[Chat] Processing ${history.length} messages | Language: ${language}`
             );
 
-            const streamResult = await this.chatModel.generateContentStream(prompt);
+            const messages = [
+                {
+                    role: "user",
+                    content: prompt,
+                },
+            ];
+
+            const stream = await this.cohere.v2.chatStream({
+                model: this.chatModelName,
+                messages: messages,
+            });
+
             let fullText = "";
 
-            if (streamResult?.stream) {
-                for await (const chunk of streamResult.stream) {
-                    const part =
-                        typeof chunk?.text === "function" ? chunk.text() : chunk?.text;
+            for await (const chunk of stream) {
+                if (chunk.type === "content-delta") {
+                    const part = chunk.delta?.message?.content?.text;
                     if (part) {
                         fullText += part;
                         if (typeof onChunk === "function") {
@@ -915,12 +929,6 @@ class JharkhandGovRAGSystem {
                         }
                     }
                 }
-            }
-
-            if (!fullText && streamResult?.response) {
-                try {
-                    fullText = (await streamResult.response).text() || "";
-                } catch (_) {}
             }
 
             const enhancedSources = relevantDocs.map((doc) => ({

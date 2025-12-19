@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { NITJSRRAGSystem } from '../rag-system/RagSystem.js';
+import { JharkhandGovRAGSystem } from '../rag-system/RagSystem.js';
 import { MongoClient } from 'mongodb';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,7 +38,7 @@ async function setupMongo() {
     throw new Error('MONGODB_URI not set; cannot use Mongo-backed ledger ingestion.');
   }
 
-  const dbName = (process.env.MONGODB_DB || 'nitjsr_rag').trim();
+  const dbName = (process.env.MONGODB_DB || 'jharkhand_gscc_rag').trim();
   const pagesName = (process.env.MONGO_PAGES_COLL || 'pages').trim();
   const chunksName = (process.env.MONGO_CHUNKS_COLL || 'chunks').trim();
 
@@ -77,7 +77,7 @@ async function main() {
   const scrapedData = JSON.parse(await fs.readFile(dataPath, 'utf8'));
 
   const mongo = await setupMongo();
-  const rag = new NITJSRRAGSystem({ mongo });
+  const rag = new JharkhandGovRAGSystem({ mongo });
 
   try {
     await rag.initialize();
