@@ -20,3 +20,4 @@ generate-hash.*
 
 # logs generated when compiling tex report
 *.log
+test*
