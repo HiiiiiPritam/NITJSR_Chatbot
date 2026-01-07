@@ -3,100 +3,481 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jharkhand GSCC Scheme Assistant</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>GSCC Chatbot Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+            background: white;
+        }
+
+        /* Floating Button */
+        .chat-float-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #1e6b2f;
+            border: none;
+            box-shadow: 0 8px 24px rgba(45, 138, 62, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .chat-float-btn svg {
+            width: 32px;
+            height: 32px;
+            stroke: white;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .chat-float-btn.hidden {
+            display: none;
+        }
+
+        /* Chat Window */
+        .chat-window {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 420px;
+            height: 600px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        .chat-window.open {
+            display: flex;
+        }
+
+        /* Header */
+        .chat-header {
+            background: #1e6b2f;
+            padding: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-header-text h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .chat-header-text p {
+            margin: 0;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .chat-close-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .chat-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .chat-close-btn svg {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        /* Body */
+        .chat-body {
+            flex: 1;
+            overflow: auto;
+            background: #f8f9fa;
+        }
+
+        /* Language Selection */
+        .language-selection {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+        }
+
+        .language-selection.hidden {
+            display: none;
+        }
+
+        .language-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #e8b923;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .language-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: white;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .language-selection h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: #2d3748;
+            text-align: center;
+        }
+
+        .language-selection p {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .language-buttons {
+            display: flex;
+            gap: 16px;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .language-btn {
+            flex: 1;
+            padding: 12px 20px;
+            background: #2d8a3e;
+            border: none;
+            border-radius: 100px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .language-btn:hover {
+            background: #22702f;
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            display: none;
+        }
+
+        .chat-messages.active {
+            display: block;
+        }
+
+        .language-toggle {
+            position: absolute;
+            width: 100%;
+            padding: 10px 16px;
+            background: #e8f5e9;
+            border-bottom: 1px solid #c8e6c9;
+        }
+
+        .toggle-btn {
+            background: white;
+            border: 1px solid #2d8a3e;
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: #2d8a3e;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn:hover {
+            background: #2d8a3e;
+            color: white;
+        }
+
+        .toggle-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .messages-container {
+            padding: 20px;
+            min-height: 300px;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 16px;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 12px 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .message.bot .message-bubble {
+            border-radius: 16px 16px 16px 4px;
+            background: white;
+            color: #2d3748;
+            padding: 16px;
+        }
+
+        .message.user .message-bubble {
+            border-radius: 16px 16px 4px 16px;
+            background:  #1e6b2f;
+            color: white;
+        }
+
+        .typing-indicator {
+            display: none;
+            justify-content: flex-start;
+            margin-bottom: 16px;
+            padding: 10px 20px;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-bubble {
+            color: #64748b;
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        /* Input Area */
+        .chat-input-area {
+            padding: 16px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: none;
+        }
+
+        .chat-input-area.active {
+            display: block;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        .chat-input:focus {
+            border-color: #2d8a3e;
+        }
+
+        .send-btn {
+            padding: 12px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 12px;
+            cursor: not-allowed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            width: 44px;
+            height: 44px;
+        }
+
+        .send-btn.active {
+            background: linear-gradient(135deg, #2d8a3e 0%, #1e6b2f 100%);
+            cursor: pointer;
+        }
+
+        .send-btn.active:hover {
+            transform: scale(1.05);
+        }
+
+        .send-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke: #94a3b8;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .send-btn.active svg {
+            stroke: white;
+        }
+
+        @media (max-width: 480px) {
+            .chat-window {
+                width: calc(100% - 32px);
+                height: calc(100% - 32px);
+                bottom: 16px;
+                right: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="chat-container">
+<!-- Floating Button -->
+<button class="chat-float-btn" id="chatFloatBtn">
+    <svg viewBox="0 0 24 24">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+</button>
+
+<!-- Chat Window -->
+<div class="chat-window" id="chatWindow">
+    <!-- Header -->
     <div class="chat-header">
-        <img src="./assets/logo.png" alt="Jharkhand Government Logo" class="chat-header-logo">
-        <div class="chat-header-text">
-            <h1>Guruji Student Credit Card Assistant</h1>
-            <p>Official Jharkhand GSCC Scheme Information Portal</p>
-        </div>
-    </div>
-
-    <div class="status-bar">
-        <div class="status-left">
-            <div class="status-indicator">
-                <div class="status-dot" id="status-dot"></div>
-                <span id="status-text">Connecting...</span>
-            </div>
-            <div class="vector-stats" id="vector-stats">
-                System: Check Status
+        <div class="chat-header-left">
+            <div class="chat-header-text">
+                <h3>GSCC Assistant</h3>
+                <p id="headerStatus">Ready</p>
             </div>
         </div>
-        <div class="status-actions">
-            <button class="btn-small" onclick="app.refreshData()">Refresh</button>
-            <button class="btn-small" onclick="app.showStats()">Statistics</button>
-            <button class="btn-small" onclick="app.showSources()">Sources</button>
+        <button class="chat-close-btn" id="chatCloseBtn">
+            <svg viewBox="0 0 24 24">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Body -->
+    <div class="chat-body">
+        <!-- Language Selection -->
+        <div class="language-selection" id="languageSelection">
+            <div class="language-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="m5 8 6 6"></path>
+                    <path d="m4 14 6-6 2-3"></path>
+                    <path d="M2 5h12"></path>
+                    <path d="M7 2h1"></path>
+                    <path d="m22 22-5-10-5 10"></path>
+                    <path d="M14 18h6"></path>
+                </svg>
+            </div>
+            <h3>Select Your Language / भाषा चुनें</h3>
+            <p>Choose your preferred language to continue<br/><br/>जारी रखने के लिए अपनी पसंदीदा भाषा चुनें</p>
+            <div class="language-buttons">
+                <button class="language-btn" onclick="selectLanguage('english')">English</button>
+                <button class="language-btn hindi" onclick="selectLanguage('hindi')">हिंदी</button>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="language-toggle">
+                <button class="toggle-btn" onclick="changeLanguage()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="m5 8 6 6"></path>
+                        <path d="m4 14 6-6 2-3"></path>
+                        <path d="M2 5h12"></path>
+                        <path d="M7 2h1"></path>
+                        <path d="m22 22-5-10-5 10"></path>
+                        <path d="M14 18h6"></path>
+                    </svg>
+                    <span id="toggleBtnText">Change Language</span>
+                </button>
+            </div>
+            <div class="messages-container" id="messagesContainer"></div>
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-bubble">
+                    <span id="typingText"></span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="chat-messages" id="chat-messages">
-        <div class="loading" id="loading">
-            <div class="loading-spinner"></div>
-            <p>Connecting to GSCC Assistant...</p>
-            <p style="font-size: 12px; margin-top: 12px; opacity: 0.7;">Accessing scheme documentation and portal data...</p>
+    <!-- Input Area -->
+    <div class="chat-input-area" id="chatInputArea">
+        <div class="input-container">
+            <input
+                    type="text"
+                    class="chat-input"
+                    id="chatInput"
+                    placeholder="Ask about GSCC scheme..."
+            >
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                <svg viewBox="0 0 24 24">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
         </div>
-    </div>
-
-    <div class="typing-indicator" id="typing-indicator">
-        <span>Processing your query</span>
-        <div class="typing-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </div>
-
-    <div class="quick-questions">
-        <h4>Common Questions</h4>
-        <div class="question-pills">
-            <div class="question-pill" onclick="app.askQuestion('What is the Guruji Student Credit Card scheme?')">About GSCC</div>
-            <div class="question-pill" onclick="app.askQuestion('What is the maximum loan amount under GSCC?')">Loan Limit</div>
-            <div class="question-pill" onclick="app.askQuestion('What is the interest rate for the student credit card?')">Interest Rate</div>
-            <div class="question-pill" onclick="app.askQuestion('What are the eligibility criteria for the scheme?')">Eligibility</div>
-            <div class="question-pill" onclick="app.askQuestion('What documents are required for application?')">Documents</div>
-        </div>
-    </div>
-
-    <div class="chat-input-container">
-        <input
-                type="text"
-                id="chat-input"
-                class="chat-input"
-                placeholder="Ask about placements, packages, companies, statistics..."
-        >
-        <button id="send-button" class="send-button" onclick="app.sendMessage()">Send</button>
     </div>
 </div>
 
-<script type="module">
-    // API Communication Module
+<script>
+    // API Configuration
     const API_BASE = (() => {
-        // Allow manual override if window.API_BASE is set
         if (typeof window !== 'undefined' && window.API_BASE) return window.API_BASE;
-
-        // If the page is opened via a static dev server on 127.0.0.1 (e.g., Live Server),
-        // direct API to the Node server bound on localhost.
         if (location.hostname === '127.0.0.1') {
             return 'http://localhost:5500';
         }
-
-        // Otherwise use relative paths (same-origin) when served by the Node server itself
         return '';
-    })();
-    const DISABLE_AUTO_INIT = (() => {
-        try {
-            const q = new URLSearchParams(location.search);
-            if (q.get('noinit') === '1') return true;
-            return Boolean(window.DISABLE_AUTO_INIT);
-        } catch (_) { return false; }
     })();
 
     function getOrCreateSessionId() {
-        const STORAGE_KEY = 'nitjsr_session_id';
+        const STORAGE_KEY = 'gscc_session_id';
         try {
             const existing = localStorage.getItem(STORAGE_KEY);
             if (existing) return existing;
@@ -111,18 +492,162 @@
         }
     }
 
-    const API = {
-        async healthCheck() {
-            const response = await fetch(`${API_BASE}/health`);
-            return await response.json();
-        },
+    // State
+    let currentLanguage = null;
+    let isTyping = false;
 
-        async initialize() {
-            const response = await fetch(`${API_BASE}/initialize`, { method: 'POST' });
-            return await response.json();
+    // Translations
+    const translations = {
+        english: {
+            welcome: "Welcome to the Jharkhand Guruji Student Credit Card (GSCC) Assistant.\n\nI am an AI assistant trained on official government documentation to help students and parents understand the Student Credit Card scheme.\n\nI can help you with:\n• Eligibility criteria for the credit card\n• Maximum loan limits and interest rates\n• List of approved banks and institutions\n• Mandatory document requirements\n• Application process and tracking\n• Repayment terms and moratorium periods\n\nPlease ask any questions regarding the GSCC Jharkhand scheme.",
+            changeLanguage: "Change Language",
+            placeholder: "Ask about GSCC scheme...",
+            typing: "Thinking...",
+            status: "Online"
         },
+        hindi: {
+            welcome: "झारखंड गुरुजी छात्र क्रेडिट कार्ड (GSCC) सहायक में आपका स्वागत है।\n\nमैं छात्रों और माता-पिता को छात्र क्रेडिट कार्ड योजना को समझने में मदद करने के लिए आधिकारिक सरकारी दस्तावेज़ीकरण पर प्रशिक्षित एक AI सहायक हूं।\n\nमैं आपकी इनमें सहायता कर सकता हूं:\n• क्रेडिट कार्ड के लिए पात्रता मानदंड\n• अधिकतम ऋण सीमा और ब्याज दरें\n• अनुमोदित बैंकों और संस्थानों की सूची\n• अनिवार्य दस्तावेज़ आवश्यकताएं\n• आवेदन प्रक्रिया और ट्रैकिंग\n• पुनर्भुगतान शर्तें और स्थगन अवधि\n\nकृपया GSCC झारखंड योजना के बारे में कोई भी प्रश्न पूछें।",
+            changeLanguage: "भाषा बदलें",
+            placeholder: "GSCC योजना के बारे में पूछें...",
+            typing: "सहायक टाइप कर रहा है...",
+            status: "ऑनलाइन"
+        }
+    };
 
-        async sendMessageStream(question, onChunk, onDone) {
+    // DOM Elements
+    const chatFloatBtn = document.getElementById('chatFloatBtn');
+    const chatWindow = document.getElementById('chatWindow');
+    const chatCloseBtn = document.getElementById('chatCloseBtn');
+    const languageSelection = document.getElementById('languageSelection');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInputArea = document.getElementById('chatInputArea');
+    const messagesContainer = document.getElementById('messagesContainer');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const headerStatus = document.getElementById('headerStatus');
+    const toggleBtnText = document.getElementById('toggleBtnText');
+    const typingText = document.getElementById('typingText');
+
+    // Open/Close Chat
+    chatFloatBtn.addEventListener('click', () => {
+        chatWindow.classList.add('open');
+        chatFloatBtn.classList.add('hidden');
+    });
+
+    chatCloseBtn.addEventListener('click', () => {
+        chatWindow.classList.remove('open');
+        chatFloatBtn.classList.remove('hidden');
+    });
+
+    // Language Selection
+    function selectLanguage(lang) {
+        currentLanguage = lang;
+        // console.log(currentLanguage);
+        languageSelection.classList.add('hidden');
+        chatMessages.classList.add('active');
+        chatInputArea.classList.add('active');
+
+        // Update UI text
+        headerStatus.textContent = translations[lang].status;
+        toggleBtnText.textContent = translations[lang].changeLanguage;
+        chatInput.placeholder = translations[lang].placeholder;
+        typingText.textContent = translations[lang].typing;
+
+        // Add welcome message
+        addMessage('bot', translations[lang].welcome);
+    }
+
+    // Change Language
+    function changeLanguage() {
+        currentLanguage = null;
+        languageSelection.classList.remove('hidden');
+        chatMessages.classList.remove('active');
+        chatInputArea.classList.remove('active');
+        messagesContainer.innerHTML = '';
+        headerStatus.textContent = 'Ready';
+    }
+
+    // Format response text
+    function formatResponse(text) {
+        text = text.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+        text = text.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+        text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        let lines = text.split('\n');
+        let inList = false;
+        let formattedLines = [];
+
+        for (let line of lines) {
+            if (line.trim().match(/^• /)) {
+                if (!inList) {
+                    formattedLines.push('<ul>');
+                    inList = true;
+                }
+                formattedLines.push('<li>' + line.trim().substring(2) + '</li>');
+            } else {
+                if (inList) {
+                    formattedLines.push('</ul>');
+                    inList = false;
+                }
+                if (line.trim()) {
+                    formattedLines.push('<p>' + line + '</p>');
+                }
+            }
+        }
+
+        if (inList) formattedLines.push('</ul>');
+
+        return formattedLines.join('\n').replace(/<p>\s*<\/p>/g, '');
+    }
+
+    // Add Message
+    function addMessage(sender, content, isHtml = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}`;
+
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.className = 'message-bubble';
+        bubbleDiv.style.marginTop = '40px';
+
+        if (isHtml) {
+            bubbleDiv.innerHTML = content;
+        } else {
+            bubbleDiv.innerHTML = formatResponse(content);
+        }
+
+        messageDiv.appendChild(bubbleDiv);
+        messagesContainer.appendChild(messageDiv);
+
+        // Scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Send Message with Streaming
+    async function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message || isTyping) return;
+
+        // Add user message
+        addMessage('user', message);
+        chatInput.value = '';
+        updateSendButton();
+
+        // Show typing indicator
+        isTyping = true;
+        typingIndicator.classList.add('active');
+
+        // Create bot message container for streaming
+        const botDiv = document.createElement('div');
+        botDiv.className = 'message bot';
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.className = 'message-bubble';
+        botDiv.appendChild(bubbleDiv);
+        messagesContainer.appendChild(botDiv);
+
+        let fullResponse = '';
+
+        try {
+            console.log(currentLanguage);
             const sessionId = getOrCreateSessionId();
             const response = await fetch(`${API_BASE}/chat-stream`, {
                 method: 'POST',
@@ -130,7 +655,11 @@
                     'Content-Type': 'application/json',
                     'x-session-id': sessionId,
                 },
-                body: JSON.stringify({ question, sessionId })
+                body: JSON.stringify({
+                    question: message,
+                    sessionId,
+                    language: currentLanguage
+                })
             });
 
             if (!response.ok) {
@@ -141,6 +670,7 @@
                 throw new Error(errorPayload.error || `Request failed with status ${response.status}`);
             }
 
+
             if (!response.body) {
                 throw new Error('Streaming not supported in this browser');
             }
@@ -149,547 +679,75 @@
             const decoder = new TextDecoder();
             let buffer = '';
 
-            try {
-                while (true) {
-                    const { value, done } = await reader.read();
-                    if (done) break;
-                    buffer += decoder.decode(value, { stream: true });
-
-                    const parts = buffer.split('\n\n');
-                    buffer = parts.pop() || '';
-
-                    for (const part of parts) {
-                        if (!part.trim()) continue;
-                        const lines = part.split('\n').filter(Boolean);
-                        const eventLine = lines.find((line) => line.startsWith('event:'));
-                        const dataLines = lines.filter((line) => line.startsWith('data:'));
-                        if (!eventLine || dataLines.length === 0) continue;
-
-                        const event = eventLine.replace('event:', '').trim();
-                        let payload = null;
-                        try {
-                            payload = JSON.parse(
-                                dataLines.map((line) => line.replace('data:', '').trim()).join('\n')
-                            );
-                        } catch (_) {
-                            continue;
-                        }
-
-                        if (event === 'chunk') {
-                            if (onChunk && typeof onChunk === 'function') {
-                                onChunk(payload?.text || '');
-                            }
-                        } else if (event === 'end') {
-                            if (onDone && typeof onDone === 'function') {
-                                onDone(payload || {});
-                            }
-                            await reader.cancel().catch(() => {});
-                            return payload || {};
-                        } else if (event === 'error') {
-                            await reader.cancel().catch(() => {});
-                            throw new Error(payload?.error || 'Streaming error');
-                        }
-                    }
-                }
-
-                buffer += decoder.decode();
-            } finally {
-                reader.releaseLock();
-            }
-
-            return null;
-        },
-
-        async scrapeData(force = true) {
-            const response = await fetch(`${API_BASE}/scrape`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ force })
-            });
-            return await response.json();
-        },
-
-        async getStatistics() {
-            const response = await fetch(`${API_BASE}/stats`);
-            return await response.json();
-        },
-
-        async getSources() {
-            const response = await fetch(`${API_BASE}/sources`);
-            return await response.json();
-        }
-    };
-
-    // UI Management Module
-    const UI = {
-        elements: {},
-
-        init() {
-            this.elements.statusDot = document.getElementById('status-dot');
-            this.elements.statusText = document.getElementById('status-text');
-            this.elements.vectorStats = document.getElementById('vector-stats');
-            this.elements.loading = document.getElementById('loading');
-            this.elements.chatMessages = document.getElementById('chat-messages');
-            this.elements.typingIndicator = document.getElementById('typing-indicator');
-            this.elements.chatInput = document.getElementById('chat-input');
-            this.elements.sendButton = document.getElementById('send-button');
-        },
-
-        updateStatus(status, text) {
-            this.elements.statusDot.className = `status-dot ${status}`;
-            this.elements.statusText.textContent = text;
-        },
-
-        updateVectorStats(stats) {
-            if (stats && stats.totalVectors !== undefined) {
-                this.elements.vectorStats.textContent = `Vector DB: ${stats.totalVectors} documents`;
-            }
-        },
-
-        hideLoading() {
-            this.elements.loading.style.display = 'none';
-        },
-
-        showErrorMessage(error = 'Unknown error') {
-            this.elements.loading.innerHTML = `
-                <div class="error-message">
-                    <h3>Connection Failed</h3>
-                    <p>Could not connect to the RAG server.</p>
-                    <p><strong>Error:</strong> ${error}</p>
-                    <p style="margin-top: 12px; font-size: 12px;">
-                        Please ensure the server is running and try refreshing the page.
-                    </p>
-                </div>
-            `;
-        },
-
-        showTyping() {
-            this.elements.typingIndicator.style.display = 'flex';
-        },
-
-        hideTyping() {
-            this.elements.typingIndicator.style.display = 'none';
-        },
-
-        enableInput() {
-            this.elements.sendButton.disabled = false;
-            this.elements.chatInput.disabled = false;
-        },
-
-        disableInput() {
-            this.elements.sendButton.disabled = true;
-            this.elements.chatInput.disabled = true;
-        },
-
-        clearInput() {
-            this.elements.chatInput.value = '';
-        },
-
-        getInputValue() {
-            return this.elements.chatInput.value.trim();
-        },
-
-        setInputValue(value) {
-            this.elements.chatInput.value = value;
-        },
-
-        addMessage(sender, content, sources = [], confidence = 0, timestamp = null) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-
-            const avatar = sender === 'bot' ? 'AI' : 'U';
-
-            const confidenceHTML = sender === 'bot'
-                ? this.buildConfidenceMetadata(confidence, timestamp)
-                : '';
-
-            const sourcesHTML = this.renderSourcesList(sources);
-
-            const formattedContent = sender === 'bot' ? this.formatResponse(content) : content.replace(/\n/g, '<br>');
-
-            messageDiv.innerHTML = `
-                <div class="message-avatar">${avatar}</div>
-                <div class="message-content">
-                    ${formattedContent}
-                    ${sourcesHTML}
-                    ${confidenceHTML}
-                </div>
-            `;
-
-            this.elements.chatMessages.appendChild(messageDiv);
-            this.scrollToBottom();
-        },
-
-        scrollToBottom() {
-            this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
-        },
-
-        formatResponse(text) {
-            text = text.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-            text = text.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            let lines = text.split('\n');
-            let inList = false;
-            let formattedLines = [];
-            
-            for (let line of lines) {
-                if (line.trim().match(/^\* /)) {
-                    if (!inList) {
-                        formattedLines.push('<ul>');
-                        inList = true;
-                    }
-                    formattedLines.push('<li>' + line.trim().substring(2) + '</li>');
-                } else {
-                    if (inList) {
-                        formattedLines.push('</ul>');
-                        inList = false;
-                    }
-                    if (line.trim()) {
-                        formattedLines.push('<p>' + line + '</p>');
-                    }
-                }
-            }
-            
-            if (inList) formattedLines.push('</ul>');
-            
-            return formattedLines.join('\n').replace(/<p>\s*<\/p>/g, '');
-        },
-
-        renderSourcesList(sources = []) {
-            if (!sources || sources.length === 0) return '';
-            return `
-                <div class="message-sources">
-                    <strong>Sources (${sources.length}):</strong><br>
-                    ${sources.map((source, index) =>
-                        `<a href="${source.url || '#'}" class="source-link" target="_blank" title="${source.text || ''}">
-                            ${index + 1}. ${source.source || source.title || 'Document'}
-                            ${source.score ? `(${Math.round(source.score * 100)}% match)` : ''}
-                        </a>`
-                    ).join('')}
-                </div>
-            `;
-        },
-
-        buildConfidenceMetadata(confidence = 0, timestamp = null) {
-            if (!(confidence > 0)) return '';
-            const confidencePercent = Math.round(confidence * 100);
-            let confidenceClass = 'low';
-            if (confidence > 0.8) confidenceClass = 'high';
-            else if (confidence > 0.6) confidenceClass = 'medium';
-            const timeLabel = timestamp
-                ? new Date(timestamp).toLocaleTimeString()
-                : new Date().toLocaleTimeString();
-            return `
-                <div class="message-metadata">
-                    <span>Response generated at ${timeLabel}</span>
-                    <span class="confidence-score ${confidenceClass}">
-                        Confidence: ${confidencePercent}%
-                    </span>
-                </div>
-            `;
-        }
-    };
-
-    // State Management Module
-    const State = {
-        isInitialized: false,
-        isLoading: false,
-        systemStats: null,
-
-        setInitialized(value) {
-            this.isInitialized = value;
-        },
-
-        setLoading(value) {
-            this.isLoading = value;
-        },
-
-        setSystemStats(stats) {
-            this.systemStats = stats;
-        },
-
-        getInitialized() {
-            return this.isInitialized;
-        },
-
-        getLoading() {
-            return this.isLoading;
-        },
-
-        getSystemStats() {
-            return this.systemStats;
-        }
-    };
-
-    // Message Templates Module
-    const Messages = {
-        welcome() {
-            return `Welcome to the Jharkhand Guruji Student Credit Card (GSCC) Assistant.
-
-I am an AI assistant trained on official government documentation to help students and parents understand the Student Credit Card scheme.
-
-I can help you with:
-• Eligibility criteria for the credit card
-• Maximum loan limits and interest rates
-• List of approved banks and institutions
-• Mandatory document requirements
-• Application process and tracking
-• Repayment terms and moratorium periods
-
-Please ask any questions regarding the GSCC Jharkhand scheme.`;
-        },
-
-        dataRefreshSuccess(summary, timestamp) {
-            return `Data refresh completed successfully.
-
-Summary:
-• ${summary.totalPages} web pages processed
-• ${summary.totalPDFs} PDF documents analyzed
-• ${summary.totalLinks} links discovered
-• Updated at: ${new Date(timestamp).toLocaleString()}
-
-I now have the latest placement information.`;
-        },
-
-        dataRefreshError() {
-            return 'Failed to refresh data. Using existing information.';
-        },
-
-        statistics(stats) {
-            return `System Statistics:
-
-Server Status:
-• Uptime: ${Math.round(stats.serverUptime / 3600)} hours
-• Node.js: ${stats.nodeVersion}
-• Environment: ${stats.nodeVersion}
-
-Vector Database:
-• Total documents: ${stats.vectorDatabase.totalVectors || 0}
-• Database fullness: ${Math.round((stats.vectorDatabase.indexFullness || 0) * 100)}%
-• Dimension: ${stats.vectorDatabase.dimension || 'N/A'}
-
-Data Sources:
-• Scraped data files: ${stats.scrapedDataFiles}
-• Latest file: ${stats.latestDataFile}
-• System initialized: ${stats.initialized ? 'Yes' : 'No'}
-
-Last updated: ${new Date(stats.timestamp).toLocaleString()}`;
-        },
-
-        statisticsError() {
-            return 'Failed to retrieve system statistics.';
-        },
-
-        sources(sources) {
-            const sourcesText = sources.map((source, index) =>
-                `${index + 1}. ${source.filename}
-   • Scraped: ${new Date(source.timestamp).toLocaleString()}
-   • Pages: ${source.pagesScraped}, PDFs: ${source.pdfsProcessed}
-   • Links: ${source.linksFound}`
-            ).join('\n\n');
-
-            return `Available Data Sources:
-
-${sourcesText}
-
-These sources contain placement data including statistics, company information, package details, and historical trends.`;
-        },
-
-        noSources() {
-            return 'No data sources found. Try refreshing the data first.';
-        },
-
-        sourcesError() {
-            return 'Failed to retrieve data sources.';
-        },
-
-        connectionError(error) {
-            return `Sorry, I encountered an error: ${error}`;
-        },
-
-        requestError() {
-            return 'Sorry, I could not process your request. Please check your connection and try again.';
-        }
-    };
-
-    // Main Application Module
-    const App = {
-        async init() {
-            UI.init();
-            await this.initializeChat();
-            this.setupEventListeners();
-            this.startHealthCheckInterval();
-        },
-
-        async initializeChat() {
-            try {
-                const data = await API.healthCheck();
-
-                if (data.status === 'healthy') {
-                    UI.updateStatus('online', 'Connected');
-                    UI.updateVectorStats(data.vectorDatabase);
-
-                    if (!data.initialized) {
-                        UI.updateStatus('idle', 'Assistant initializing...');
-                        // Removed auto-call to /initialize as per user request
-                    }
-
-                    State.setInitialized(true);
-                    UI.hideLoading();
-                    UI.addMessage('bot', Messages.welcome(), [], 1.0, new Date().toISOString());
-                } else {
-                    throw new Error(data.error || 'Server unhealthy');
-                }
-            } catch (error) {
-                console.error('Failed to connect:', error);
-                UI.updateStatus('offline', 'Connection Failed');
-                UI.showErrorMessage(error.message);
-            }
-        },
-
-        setupEventListeners() {
-            const input = UI.elements.chatInput;
-            input.addEventListener('keypress', (event) => {
-                if (event.key === 'Enter' && !event.shiftKey) {
-                    event.preventDefault();
-                    this.sendMessage();
-                }
-            });
-        },
-
-        async sendMessage() {
-            if (State.getLoading() || !State.getInitialized()) return;
-
-            const message = UI.getInputValue();
-            if (!message) return;
-
-            UI.addMessage('user', message);
-            UI.clearInput();
-            UI.showTyping();
-            State.setLoading(true);
-            UI.disableInput();
-
-            const botDiv = document.createElement('div');
-            botDiv.className = 'message bot';
-            botDiv.innerHTML = `
-                <div class="message-avatar">AI</div>
-                <div class="message-content">
-                    <div class="live-response"></div>
-                    <div class="live-sources"></div>
-                    <div class="live-metadata"></div>
-                </div>
-            `;
-            UI.elements.chatMessages.appendChild(botDiv);
-            UI.scrollToBottom();
-
-            const liveResponse = botDiv.querySelector('.live-response');
-            const liveSources = botDiv.querySelector('.live-sources');
-            const liveMetadata = botDiv.querySelector('.live-metadata');
-            let fullResponse = '';
-
-            try {
-                await API.sendMessageStream(
-                    message,
-                    (chunk) => {
-                        fullResponse += chunk || '';
-                        liveResponse.innerHTML = UI.formatResponse(fullResponse);
-                        UI.scrollToBottom();
-                    },
-                    (meta) => {
-                        if (meta?.sources) {
-                            liveSources.innerHTML = UI.renderSourcesList(meta.sources);
-                        }
-                        liveMetadata.innerHTML = UI.buildConfidenceMetadata(
-                            meta?.confidence || 0,
-                            new Date().toISOString()
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const parts = buffer.split('\n\n');
+                buffer = parts.pop() || '';
+
+                for (const part of parts) {
+                    if (!part.trim()) continue;
+                    const lines = part.split('\n').filter(Boolean);
+                    const eventLine = lines.find((line) => line.startsWith('event:'));
+                    const dataLines = lines.filter((line) => line.startsWith('data:'));
+                    if (!eventLine || dataLines.length === 0) continue;
+
+                    const event = eventLine.replace('event:', '').trim();
+                    let payload = null;
+                    try {
+                        payload = JSON.parse(
+                            dataLines.map((line) => line.replace('data:', '').trim()).join('\n')
                         );
-                        UI.scrollToBottom();
+                    } catch (_) {
+                        continue;
                     }
-                );
-            } catch (error) {
-                console.error('Error sending message:', error);
-                liveResponse.innerHTML = UI.formatResponse(
-                    Messages.connectionError(error?.message || 'Streaming failed')
-                );
-                liveSources.innerHTML = '';
-                liveMetadata.innerHTML = '';
-                UI.scrollToBottom();
-            } finally {
-                UI.hideTyping();
-                State.setLoading(false);
-                UI.enableInput();
-            }
-        },
 
-        askQuestion(question) {
-            UI.setInputValue(question);
-            this.sendMessage();
-        },
-
-        async refreshData() {
-            if (State.getLoading()) return;
-
-            UI.updateStatus('initializing', 'Refreshing data...');
-
-            try {
-                const data = await API.scrapeData(true);
-
-                if (data.success) {
-                    UI.updateStatus('online', 'Ready');
-                    UI.addMessage('bot', Messages.dataRefreshSuccess(data.summary, data.timestamp));
-                } else {
-                    throw new Error(data.error);
+                    if (event === 'chunk') {
+                        fullResponse += payload?.text || '';
+                        bubbleDiv.innerHTML = formatResponse(fullResponse);
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    } else if (event === 'end') {
+                        await reader.cancel().catch(() => {});
+                        break;
+                    } else if (event === 'error') {
+                        await reader.cancel().catch(() => {});
+                        throw new Error(payload?.error || 'Streaming error');
+                    }
                 }
-            } catch (error) {
-                console.error('Error refreshing data:', error);
-                UI.updateStatus('online', 'Ready');
-                UI.addMessage('bot', Messages.dataRefreshError());
             }
-        },
-
-        async showStats() {
-            try {
-                const data = await API.getStatistics();
-
-                if (data.success) {
-                    UI.addMessage('bot', Messages.statistics(data.statistics));
-                }
-            } catch (error) {
-                UI.addMessage('bot', Messages.statisticsError());
-            }
-        },
-
-        async showSources() {
-            try {
-                const data = await API.getSources();
-
-                if (data.success && data.sources.length > 0) {
-                    UI.addMessage('bot', Messages.sources(data.sources));
-                } else {
-                    UI.addMessage('bot', Messages.noSources());
-                }
-            } catch (error) {
-                UI.addMessage('bot', Messages.sourcesError());
-            }
-        },
-
-        startHealthCheckInterval() {
-            setInterval(async () => {
-                try {
-                    const data = await API.healthCheck();
-                    UI.updateVectorStats(data.vectorDatabase);
-                } catch (error) {
-                    console.log('Health check failed:', error.message);
-                }
-            }, 300000); // 5 minutes
+        } catch (error) {
+            console.error('Error sending message:', error);
+            bubbleDiv.innerHTML = formatResponse(
+                currentLanguage === 'english'
+                    ? `Sorry, I encountered an error: ${error.message}`
+                    : `क्षमा करें, मुझे एक त्रुटि का सामना करना पड़ा: ${error.message}`
+            );
+        } finally {
+            typingIndicator.classList.remove('active');
+            isTyping = false;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
-    };
+    }
 
-    // Make app globally accessible for inline onclick handlers
-    window.app = App;
+    // Update Send Button State
+    function updateSendButton() {
+        if (chatInput.value.trim()) {
+            sendBtn.classList.add('active');
+        } else {
+            sendBtn.classList.remove('active');
+        }
+    }
 
-    // Initialize app when DOM is loaded
-    window.addEventListener('load', () => App.init());
+    // Input Event Listeners
+    chatInput.addEventListener('input', updateSendButton);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
 </script>
 </body>
 </html>
