@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GSCC Chatbot Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,10 +15,9 @@
         }
 
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+            font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
             background: white;
         }
-
         /* Floating Button */
         .chat-float-btn {
             position: fixed;
@@ -263,6 +265,8 @@
             font-size: 14px;
             line-height: 1.5;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .message.bot .message-bubble {
@@ -372,6 +376,17 @@
                 bottom: 16px;
                 right: 16px;
             }
+        }
+
+        .message-bubble ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        
+        .message-bubble li {
+            margin: 4px 0;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
     </style>
 </head>
@@ -527,7 +542,7 @@
     const typingIndicator = document.getElementById('typingIndicator');
     const headerStatus = document.getElementById('headerStatus');
     const toggleBtnText = document.getElementById('toggleBtnText');
-    const typingText = document.getElementById('typingText');
+    const typingText = document.getElementById('typingText');    
 
     // Open/Close Chat
     chatFloatBtn.addEventListener('click', () => {
